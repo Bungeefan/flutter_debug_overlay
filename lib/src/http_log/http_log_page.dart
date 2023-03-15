@@ -34,6 +34,15 @@ class _HttpLogPageState extends State<HttpLogPage> {
   }
 
   @override
+  void didUpdateWidget(covariant HttpLogPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.bucket != oldWidget.bucket) {
+      oldWidget.bucket.removeListener(_updateBucket);
+      widget.bucket.addListener(_updateBucket);
+    }
+  }
+
+  @override
   void dispose() {
     widget.bucket.removeListener(_updateBucket);
     super.dispose();
