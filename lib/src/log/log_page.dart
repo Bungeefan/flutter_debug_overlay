@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../util/log_bucket.dart';
 import '../util/split_page.dart';
@@ -50,7 +51,15 @@ class _LogPageState extends State<LogPage> {
       (event) => event.time,
       (a, b) => b.compareTo(a),
     );
-    setState(() {});
+    _safeSetState();
+  }
+
+  void _safeSetState() {
+    if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
+      SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    } else {
+      setState(() {});
+    }
   }
 
   @override

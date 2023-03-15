@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../util/http_bucket.dart';
 import '../util/split_page.dart';
@@ -43,7 +44,15 @@ class _HttpLogPageState extends State<HttpLogPage> {
       (event) => event.request?.time ?? event.responseTime,
       (a, b) => a != null && b != null ? b.compareTo(a) : -1,
     );
-    setState(() {});
+    _safeSetState();
+  }
+
+  void _safeSetState() {
+    if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
+      SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    } else {
+      setState(() {});
+    }
   }
 
   @override
