@@ -57,11 +57,7 @@ class _HttpLogPageState extends State<HttpLogPage> {
   }
 
   void _safeSetState() {
-    if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
-      SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
-    } else {
-      setState(() {});
-    }
+    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   @override

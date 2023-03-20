@@ -378,10 +378,6 @@ class DebugOverlayState extends State<DebugOverlay> {
   }
 
   void _safeSetState() {
-    if (SchedulerBinding.instance.schedulerPhase != SchedulerPhase.idle) {
-      SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
-    } else {
-      setState(() {});
-    }
+    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 }
