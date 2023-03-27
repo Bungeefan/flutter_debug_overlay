@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class InfoPage extends StatelessWidget {
+class InfoPage extends StatefulWidget {
   final List<Widget> entries;
 
   const InfoPage({
@@ -9,8 +9,19 @@ class InfoPage extends StatelessWidget {
   });
 
   @override
+  State<InfoPage> createState() => _InfoPageState();
+}
+
+class _InfoPageState extends State<InfoPage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
-    if (entries.isEmpty) {
+    super.build(context);
+
+    if (widget.entries.isEmpty) {
       return Center(
         child: Text(
           "No entries",
@@ -28,9 +39,10 @@ class InfoPage extends StatelessWidget {
 
     // https://github.com/flutter/flutter/issues/99158
     return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth > 1100 && entries.length > 1) {
-        var firstList = entries.sublist(0, (entries.length / 2).ceil());
-        var secondList = entries.sublist(firstList.length);
+      if (constraints.maxWidth > 1100 && widget.entries.length > 1) {
+        var firstList =
+            widget.entries.sublist(0, (widget.entries.length / 2).ceil());
+        var secondList = widget.entries.sublist(firstList.length);
         return SingleChildScrollView(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +71,8 @@ class InfoPage extends StatelessWidget {
         return SingleChildScrollView(
           child: Column(
             children: [
-              for (int i = 0; i < entries.length; i++) ...buildItem(i, entries),
+              for (int i = 0; i < widget.entries.length; i++)
+                ...buildItem(i, widget.entries),
             ],
           ),
         );
