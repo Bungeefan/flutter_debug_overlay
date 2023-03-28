@@ -1,3 +1,9 @@
+## 0.1.0
+
+* Replaced the `enableOnlyInDebugMode` constructor parameter with a static `enabled` field to
+  further improve performance when disabled.
+* Added KeepAlive to Info page to prevent frequent re-evaluations.
+
 ## 0.0.1+2
 
 * Further fixed "setState() or markNeedsBuild() called during build" errors.
