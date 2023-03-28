@@ -23,27 +23,37 @@ class HttpLogClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    bool enabled = DebugOverlay.enabled;
+
     try {
-      var requestBody = await request.finalize().toBytes();
-      httpBucket.add(HttpInteraction(
-        id: request.hashCode,
-        uri: request.url,
-        method: request.method,
-        request: convertRequest(request, requestBody),
-      ));
+      var effectiveRequest = request;
+      if (enabled) {
+        var requestBody = await request.finalize().toBytes();
+        httpBucket.add(HttpInteraction(
+          id: request.hashCode,
+          uri: request.url,
+          method: request.method,
+          request: convertRequest(request, requestBody),
+        ));
+        effectiveRequest =
+            _copyRequest(request, http.ByteStream.fromBytes(requestBody));
+      }
 
-      http.StreamedResponse response = await _inner
-          .send(_copyRequest(request, http.ByteStream.fromBytes(requestBody)));
+      http.StreamedResponse response = await _inner.send(effectiveRequest);
 
-      var responseBody = await response.stream.toBytes();
-      httpBucket.addResponse(
-        request.hashCode,
-        convertResponse(response, responseBody),
-      );
-
-      return _copyResponse(response, http.ByteStream.fromBytes(responseBody));
+      if (enabled) {
+        var responseBody = await response.stream.toBytes();
+        httpBucket.addResponse(
+          request.hashCode,
+          convertResponse(response, responseBody),
+        );
+        return _copyResponse(response, http.ByteStream.fromBytes(responseBody));
+      }
+      return response;
     } catch (e, stack) {
-      httpBucket.addError(request.hashCode, convertError(e, stack));
+      if (enabled) {
+        httpBucket.addError(request.hashCode, convertError(e, stack));
+      }
       rethrow;
     }
   }
@@ -62,10 +72,12 @@ class HttpLogClient extends http.BaseClient {
       ..maxRedirects = original.maxRedirects
       ..persistentConnection = original.persistentConnection;
 
-    body.listen(request.sink.add,
-        onError: request.sink.addError,
-        onDone: request.sink.close,
-        cancelOnError: true);
+    body.listen(
+      request.sink.add,
+      onError: request.sink.addError,
+      onDone: request.sink.close,
+      cancelOnError: true,
+    );
 
     return request;
   }

@@ -32,11 +32,13 @@ typedef DetectorBuilder = Widget Function(VoidCallback onDetect, Widget child);
 /// It is recommended to use your own builder, as this allows a
 /// higher usability and customizability.
 class DebugOverlay extends StatefulWidget {
+  /// Whether overlays should be usable.
+  ///
+  /// Defaults to the value of [kDebugMode].
+  static bool enabled = kDebugMode;
+
   /// Whether the overlay is initially visible.
   final bool visible;
-
-  /// Whether the overlay should only be usable if [kDebugMode] is true.
-  final bool enableOnlyInDebugMode;
 
   /// Whether the overlay should maintain its state while being invisible to the user.
   ///
@@ -80,9 +82,6 @@ class DebugOverlay extends StatefulWidget {
 
   /// Creates a [DebugOverlay] widget.
   ///
-  /// [enableOnlyInDebugMode] controls whether the overlay should only
-  /// be usable if [kDebugMode] is true.
-  ///
   /// [maintainState] controls whether the overlay should maintain its state
   /// while being invisible to the user, this allows for a quick resume
   /// when toggling the overlay while inspecting something.
@@ -95,7 +94,6 @@ class DebugOverlay extends StatefulWidget {
   DebugOverlay({
     super.key,
     this.visible = false,
-    bool? enableOnlyInDebugMode,
     bool? maintainState,
     this.initialTabIndex = 0,
     this.opacity = 0.9,
@@ -111,8 +109,7 @@ class DebugOverlay extends StatefulWidget {
       if (!kIsWeb) PlatformInfoEntry(),
     ],
     required this.child,
-  })  : enableOnlyInDebugMode = enableOnlyInDebugMode ?? true,
-        maintainState = maintainState ?? true,
+  })  : maintainState = maintainState ?? true,
         detectorBuilder = detectorBuilder ?? _buildDetector,
         hiddenFields = hiddenFields.map((e) => e.toLowerCase()).toList();
 
@@ -127,8 +124,7 @@ class DebugOverlay extends StatefulWidget {
   ///
   /// Creates the Debug Overlay and puts in on top of the [Router]/[Navigator].
   ///
-  /// [enableOnlyInDebugMode] controls whether the overlay should only
-  /// be usable if [kDebugMode] is true.
+  /// [DebugOverlay.enabled] controls whether overlays are enabled and usable.
   ///
   /// [maintainState] controls whether the overlay should maintain its state
   /// while being invisible to the user, this allows for a quick resume
@@ -140,7 +136,6 @@ class DebugOverlay extends StatefulWidget {
   /// [hiddenFields] specifies a list of fields whose values are hidden
   /// throughout the overlay.
   static TransitionBuilder builder({
-    bool? enableOnlyInDebugMode,
     bool? maintainState,
     int initialTabIndex = 0,
     double opacity = 0.9,
@@ -152,7 +147,6 @@ class DebugOverlay extends StatefulWidget {
   }) {
     return (context, child) {
       return DebugOverlay(
-        enableOnlyInDebugMode: enableOnlyInDebugMode,
         maintainState: maintainState,
         initialTabIndex: initialTabIndex,
         opacity: opacity,
@@ -252,7 +246,7 @@ class DebugOverlayState extends State<DebugOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.enableOnlyInDebugMode || kDebugMode) {
+    if (DebugOverlay.enabled) {
       return widget.detectorBuilder.call(
         () => toggleVisibility(),
         Stack(

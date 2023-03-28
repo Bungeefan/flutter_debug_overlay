@@ -3,6 +3,8 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
+import '../debug_overlay.dart';
+
 /// Holds data of type [T].
 ///
 /// If [maxStorage] gets exceeded, the first entries are removed.
@@ -39,7 +41,11 @@ class Bucket<T> extends ChangeNotifier {
   /// Adds an entry to the bucket.
   ///
   /// If [maxStorage] gets exceeded, the first added entries are removed.
+  ///
+  /// This method respects [DebugOverlay.enabled].
   void add(T entry) {
+    if (!DebugOverlay.enabled) return;
+
     if (allowDuplicates || _entries.none((e) => e == entry)) {
       _entries.add(entry);
       _trimBucket();

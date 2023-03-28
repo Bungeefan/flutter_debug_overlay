@@ -24,6 +24,8 @@ class HttpClientLogAdapter {
   HttpClientLogAdapter(this.httpBucket);
 
   void onRequest(HttpClientRequest request, [Object? body]) {
+    if (!DebugOverlay.enabled) return;
+
     httpBucket.add(HttpInteraction(
       id: request.hashCode,
       uri: request.uri,
@@ -37,6 +39,8 @@ class HttpClientLogAdapter {
     HttpClientResponse response, [
     Object? body,
   ]) {
+    if (!DebugOverlay.enabled) return;
+
     var resp = convertResponse(response, body);
     httpBucket.addResponse(request.hashCode, resp);
   }
@@ -46,6 +50,8 @@ class HttpClientLogAdapter {
     Object? error,
     StackTrace? stack,
   ]) {
+    if (!DebugOverlay.enabled) return;
+
     var err = convertError(error, stack);
     httpBucket.addError(request.hashCode, err);
   }

@@ -16,26 +16,32 @@ class DioLogInterceptor extends Interceptor {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    httpBucket.add(HttpInteraction(
-      id: options.hashCode,
-      uri: options.uri,
-      method: options.method,
-      request: convertRequest(options),
-    ));
+    if (DebugOverlay.enabled) {
+      httpBucket.add(HttpInteraction(
+        id: options.hashCode,
+        uri: options.uri,
+        method: options.method,
+        request: convertRequest(options),
+      ));
+    }
     return handler.next(options);
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    var resp = convertResponse(response);
-    httpBucket.addResponse(response.requestOptions.hashCode, resp);
+    if (DebugOverlay.enabled) {
+      var resp = convertResponse(response);
+      httpBucket.addResponse(response.requestOptions.hashCode, resp);
+    }
     return handler.next(response);
   }
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    var error = convertError(err);
-    httpBucket.addError(err.requestOptions.hashCode, error);
+    if (DebugOverlay.enabled) {
+      var error = convertError(err);
+      httpBucket.addError(err.requestOptions.hashCode, error);
+    }
     return handler.next(err);
   }
 

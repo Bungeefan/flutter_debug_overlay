@@ -16,6 +16,10 @@ import 'logging/log_client.dart';
 import 'logging/log_interceptor.dart';
 
 void main() {
+  // Enables the debug overlay even in release mode.
+  DebugOverlay.enabled = true;
+
+  // Connects logger to the overlay.
   Logger.addOutputListener((event) {
     MyApp.logBucket.add(LogEvent(
       level: LogLevel.values
