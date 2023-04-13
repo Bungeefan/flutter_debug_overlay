@@ -1,3 +1,7 @@
+## 0.1.0+1
+
+* Changed sdk constraint to `2.18.0`.
+
 ## 0.1.0
 
 * Replaced the `enableOnlyInDebugMode` constructor parameter with a static `enabled` field to
