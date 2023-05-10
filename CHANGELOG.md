@@ -1,3 +1,8 @@
+## 0.1.1
+
+* Upgraded package_info_plus to `4.0.0`.
+* Upgraded device_info_plus to `9.0.0`.
+
 ## 0.1.0+1
 
 * Changed sdk constraint to `2.18.0`.
