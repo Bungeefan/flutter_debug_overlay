@@ -47,8 +47,10 @@ class DebugInfoEntry extends StatelessWidget {
           }
 
           if (snapshot.data!.isNotEmpty) {
-            return Column(
-              children: buildChildren(snapshot.data!),
+            return SelectionArea(
+              child: Column(
+                children: buildChildren(snapshot.data!),
+              ),
             );
           } else {
             return Center(
@@ -100,7 +102,7 @@ class DebugInfoEntry extends StatelessWidget {
                   children: [
                     if (child.showName && name != null)
                       wrapTooltip(
-                        SelectableText(
+                        Text(
                           child.showSeparator ? "$name:" : name,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
@@ -113,7 +115,7 @@ class DebugInfoEntry extends StatelessWidget {
                             padding: child.showName
                                 ? const EdgeInsets.only(left: 4.0)
                                 : EdgeInsets.zero,
-                            child: SelectableText(description),
+                            child: Text(description),
                           ),
                           tooltip: !child.showName || name == null
                               ? child.tooltip
@@ -128,7 +130,7 @@ class DebugInfoEntry extends StatelessWidget {
                   padding: child.showName
                       ? const EdgeInsets.only(left: _kChildrenPadding)
                       : EdgeInsets.zero,
-                  child: SelectableText(description),
+                  child: Text(description),
                 ),
               ...buildChildren(child.getProperties(), _kChildrenPadding),
               if (nextChildren.isNotEmpty)
