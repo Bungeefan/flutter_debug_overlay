@@ -13,7 +13,7 @@ dependencies:
 
   universal_io: ^2.2.0
   logger: ^1.3.0
-  http: ^0.13.5
+  http: ^1.0.0
   dio: ^5.0.2
 
   flutter_debug_overlay:
