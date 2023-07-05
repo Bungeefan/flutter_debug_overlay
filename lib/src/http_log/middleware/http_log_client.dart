@@ -5,6 +5,7 @@ import 'package:http/retry.dart';
 import 'package:http_parser/http_parser.dart';
 
 import '../../../flutter_debug_overlay.dart';
+import '../../util/utils.dart';
 
 /// An [http.Client] wrapper that logs requests to a [HttpBucket].
 ///
@@ -101,26 +102,11 @@ class HttpLogClient extends http.BaseClient {
     return response;
   }
 
-  static MediaType? _extractMediaType(Map<String, String> headers) {
-    String? contentType = headers["content-type"];
-    MediaType? mediaType =
-        contentType != null ? MediaType.parse(contentType) : null;
-    return mediaType;
-  }
-
-  static bool _isMediaTypeText(MediaType? mediaType) {
-    return mediaType?.type == "text" ||
-        mediaType?.subtype == "x-www-form-urlencoded" ||
-        mediaType?.subtype == "form-data" ||
-        mediaType?.subtype == "xml" ||
-        mediaType?.subtype == "json";
-  }
-
   HttpRequest convertRequest(http.BaseRequest request, Uint8List body) {
-    MediaType? mediaType = _extractMediaType(request.headers);
+    MediaType? mediaType = Utils.extractMediaType(request.headers);
     return HttpRequest(
       headers: request.headers,
-      body: _isMediaTypeText(mediaType)
+      body: Utils.isMediaTypeText(mediaType)
           ? http.Response.bytes(body, 200).body
           : body,
       time: DateTime.now(),
@@ -132,12 +118,12 @@ class HttpLogClient extends http.BaseClient {
   }
 
   HttpResponse convertResponse(http.StreamedResponse response, Uint8List body) {
-    MediaType? mediaType = _extractMediaType(response.headers);
+    MediaType? mediaType = Utils.extractMediaType(response.headers);
     return HttpResponse(
       headers: response.headers,
       statusCode: response.statusCode,
       statusMessage: response.reasonPhrase,
-      body: _isMediaTypeText(mediaType)
+      body: Utils.isMediaTypeText(mediaType)
           ? http.Response.bytes(body, 200).body
           : body,
       time: DateTime.now(),

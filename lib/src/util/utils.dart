@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http_parser/http_parser.dart';
 
 abstract class Utils {
   static Future<void> copyToClipboard(
@@ -37,5 +38,27 @@ abstract class Utils {
       } on FormatException catch (_) {}
     }
     return data;
+  }
+
+  static MediaType? extractMediaType(Map<String, dynamic> headers) {
+    dynamic contentType = headers["content-type"];
+    if (contentType is List) {
+      contentType = contentType.firstOrNull;
+    }
+    MediaType? mediaType =
+        contentType != null ? MediaType.parse(contentType) : null;
+    return mediaType;
+  }
+
+  static bool isMediaTypeText(MediaType? mediaType) {
+    return mediaType?.type == "text" ||
+        mediaType?.subtype == "x-www-form-urlencoded" ||
+        mediaType?.subtype == "form-data" ||
+        mediaType?.subtype == "xml" ||
+        mediaType?.subtype == "json";
+  }
+
+  static encodingForCharset(MediaType? mediaType) {
+    return Encoding.getByName(mediaType?.parameters['charset']) ?? utf8;
   }
 }

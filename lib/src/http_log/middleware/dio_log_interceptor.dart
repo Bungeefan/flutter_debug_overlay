@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 
 import '../../../flutter_debug_overlay.dart';
+import '../../util/utils.dart';
 
 /// An [Dio] interceptor that logs requests to a [HttpBucket].
 ///
@@ -46,10 +48,13 @@ class DioLogInterceptor extends Interceptor {
   }
 
   HttpRequest convertRequest(RequestOptions options) {
+    MediaType? mediaType = Utils.extractMediaType(options.headers);
     return HttpRequest(
       headers: options.headers,
       parameters: options.queryParameters,
-      body: options.data,
+      body: options.data is List<int> && Utils.isMediaTypeText(mediaType)
+          ? Utils.encodingForCharset(mediaType).decode(options.data)
+          : options.data,
       time: DateTime.now(),
       additionalData: {
         "persistentConnection": options.persistentConnection,
@@ -65,11 +70,14 @@ class DioLogInterceptor extends Interceptor {
   }
 
   HttpResponse convertResponse(Response response) {
+    MediaType? mediaType = Utils.extractMediaType(response.headers.map);
     return HttpResponse(
       headers: response.headers.map,
       statusCode: response.statusCode,
       statusMessage: response.statusMessage,
-      body: response.data,
+      body: response.data is List<int> && Utils.isMediaTypeText(mediaType)
+          ? Utils.encodingForCharset(mediaType).decode(response.data)
+          : response.data,
       time: DateTime.now(),
       additionalData: {
         "realUri": response.realUri,

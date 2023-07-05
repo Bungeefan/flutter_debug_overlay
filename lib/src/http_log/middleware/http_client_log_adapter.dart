@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:http_parser/http_parser.dart';
+
 import '../../../flutter_debug_overlay.dart';
+import '../../util/utils.dart';
 
 /// An "dart:io" [HttpClient] adapter that logs requests to a [HttpBucket].
 ///
@@ -60,9 +63,13 @@ class HttpClientLogAdapter {
     HttpClientRequest request, [
     Object? body,
   ]) {
+    var headers = _extractHeaders(request.headers);
+    MediaType? mediaType = Utils.extractMediaType(headers);
     return HttpRequest(
-      headers: _extractHeaders(request.headers),
-      body: body,
+      headers: headers,
+      body: body is List<int> && Utils.isMediaTypeText(mediaType)
+          ? Utils.encodingForCharset(mediaType).decode(body)
+          : body,
       time: DateTime.now(),
       additionalData: {
         "contentLength": request.contentLength,
@@ -84,11 +91,15 @@ class HttpClientLogAdapter {
     HttpClientResponse response, [
     Object? body,
   ]) {
+    var headers = _extractHeaders(response.headers);
+    MediaType? mediaType = Utils.extractMediaType(headers);
     return HttpResponse(
-      headers: _extractHeaders(response.headers),
+      headers: headers,
       statusCode: response.statusCode,
       statusMessage: response.reasonPhrase,
-      body: body,
+      body: body is List<int> && Utils.isMediaTypeText(mediaType)
+          ? Utils.encodingForCharset(mediaType).decode(body)
+          : body,
       time: DateTime.now(),
       additionalData: {
         "contentLength": response.contentLength,
