@@ -253,14 +253,18 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> _sendHttpClientRequest() async {
+  /// Dart HttpClient
+  Future<void> _sendHttpClientRequest([
+    ResponseType responseType = ResponseType.plain,
+  ]) async {
     HttpClientRequest? request;
     try {
       request = await httpClient.getUrl(baseUrl.replace(path: "418"));
       // Log request
       httpClientAdapter.onRequest(request);
       var response = await request.close();
-      var responseBody = await response.transform(utf8.decoder).join();
+      Object? responseBody =
+          await _parseHttpClientResponse(response, responseType);
       // Log response
       httpClientAdapter.onResponse(request, response, responseBody);
 
@@ -274,6 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  /// "http"
   Future<void> _sendHttpRequest() {
     return client
         .post(baseUrl.replace(path: "204"), body: bigJson)
@@ -282,7 +287,10 @@ class _MyHomePageState extends State<MyHomePage> {
             log("\"http\" request failed", error: e, stackTrace: stack));
   }
 
-  Future<void> _sendDioRequest() {
+  /// Dio
+  Future<void> _sendDioRequest([
+    ResponseType responseType = ResponseType.bytes,
+  ]) {
     return dio
         .putUri(
           baseUrl.replace(path: "201"),
@@ -307,11 +315,33 @@ class _MyHomePageState extends State<MyHomePage> {
               "Test extras": true,
             },
             validateStatus: (status) => true,
+            responseType: responseType,
           ),
         )
         .then((value) => log("Received Dio response: $value"))
         .catchError((e, stack) =>
             log("Dio request failed", error: e, stackTrace: stack));
+  }
+
+  Future<Object?> _parseHttpClientResponse(
+    HttpClientResponse response,
+    ResponseType responseType,
+  ) async {
+    Object? responseBody;
+    switch (responseType) {
+      case ResponseType.json:
+      case ResponseType.plain:
+        responseBody = await response.transform(utf8.decoder).join();
+        break;
+      case ResponseType.bytes:
+        responseBody =
+            (await response.toList()).expand((element) => element).toList();
+        break;
+      case ResponseType.stream:
+        responseBody = response;
+        break;
+    }
+    return responseBody;
   }
 }
 
