@@ -20,9 +20,9 @@ dependencies:
   flutter_json: ^0.0.1
 
   # Used to provide interceptors and adapters
-  http: ^0.13.5
+  http: ^1.0.0
   http_parser: ^4.0.2
-  dio: ^5.0.2
+  dio: ^5.2.0
 
 dev_dependencies:
   flutter_test:
