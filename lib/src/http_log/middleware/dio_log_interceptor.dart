@@ -37,7 +37,7 @@ class DioLogInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     if (DebugOverlay.enabled) {
       var error = convertError(err);
       httpBucket.addError(err.requestOptions.hashCode, error);
@@ -80,7 +80,7 @@ class DioLogInterceptor extends Interceptor {
     );
   }
 
-  HttpError convertError(DioError error) {
+  HttpError convertError(DioException error) {
     return HttpError(
       error: error.error,
       stackTrace: error.stackTrace,
