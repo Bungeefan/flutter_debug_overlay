@@ -1,3 +1,10 @@
+## 0.1.2
+
+* Added proper response parsing via content-type and charset.
+* Use `SelectionArea` instead of `SelectableText` for Info tab.
+* Bumped Flutter SDK to `3.10.0`.
+* Upgraded http to `1.0.0`.
+
 ## 0.1.1
 
 * Upgraded package_info_plus to `4.0.0`.
