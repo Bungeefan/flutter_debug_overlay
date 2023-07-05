@@ -11,6 +11,7 @@ class DebugEntry extends StatelessWidget {
     required this.title,
     this.actions = const [],
     required this.child,
+    this.headerPadding = const EdgeInsets.symmetric(horizontal: 8),
     this.contentPadding = const EdgeInsets.symmetric(horizontal: 16),
   });
 
@@ -24,6 +25,11 @@ class DebugEntry extends StatelessWidget {
 
   /// The content in the entry.
   final Widget child;
+
+  /// Padding that wraps the header row (title and actions).
+  final EdgeInsetsGeometry headerPadding;
+
+  /// Padding that wraps the content.
   final EdgeInsetsGeometry contentPadding;
 
   @override
@@ -34,27 +40,30 @@ class DebugEntry extends StatelessWidget {
       children: [
         ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 48),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: DefaultTextStyle.merge(
-                    style: Theme.of(context).textTheme.titleLarge!,
-                    child: title,
+          child: Padding(
+            padding: headerPadding,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: DefaultTextStyle.merge(
+                      style: Theme.of(context).textTheme.titleLarge!,
+                      child: title,
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: actions,
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: actions,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Padding(
