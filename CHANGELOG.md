@@ -1,3 +1,7 @@
+## 0.1.3
+
+* Adopted more common LogLevel names.
+
 ## 0.1.2
 
 * Added proper response parsing via content-type and charset.
