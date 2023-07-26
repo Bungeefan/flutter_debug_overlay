@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +20,30 @@ import 'logging/log_interceptor.dart';
 void main() {
   // Enables the debug overlay even in release mode.
   DebugOverlay.enabled = true;
+
+  // Uncaught Exceptions.
+  PlatformDispatcher.instance.onError = (exception, stackTrace) {
+    MyApp.logBucket.add(LogEvent(
+      level: LogLevel.fatal,
+      message: "Unhandled Exception",
+      error: exception,
+      stackTrace: stackTrace,
+    ));
+    return false;
+  };
+
+  // Rendering Exceptions.
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    MyApp.logBucket.add(LogEvent(
+      level: LogLevel.fatal,
+      message: details.exceptionAsString(),
+      error: (kDebugMode
+          ? details.toDiagnosticsNode().toStringDeep()
+          : details.exception.toString()),
+      stackTrace: details.stack,
+    ));
+  };
 
   // Connects logger to the overlay.
   Logger.addOutputListener((event) {
