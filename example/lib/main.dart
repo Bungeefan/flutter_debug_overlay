@@ -253,6 +253,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  @override
+  void dispose() {
+    dio.close();
+    client.close();
+    httpClient.close();
+    super.dispose();
+  }
+
   /// Dart HttpClient
   Future<void> _sendHttpClientRequest([
     ResponseType responseType = ResponseType.plain,
