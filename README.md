@@ -76,6 +76,13 @@ class MyApp extends StatelessWidget {
 }
 ```
 
+### Open the Overlay
+
+By default, the debug overlay can be triggered either by pressing and holding two fingers on the
+screen or by pressing ALT+F12 on a keyboard.
+
+You can also use the `visible` property of the `DebugOverlay` widget to control it programmatically.
+
 ### Add log entries
 
 To access your logs in the log view:
@@ -182,13 +189,6 @@ debug overlay.
     ```dart
     client = HttpLogClient(MyApp.httpBucket, http.Client());
     ```
-
-### Open the Overlay
-
-By default, the debug overlay can be triggered either by pressing and holding two fingers on the
-screen or by pressing ALT+F12 on a keyboard.
-
-You can also use the `visible` property of the `DebugOverlay` widget to control it programmatically.
 
 ## Additional information
 
