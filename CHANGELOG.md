@@ -1,3 +1,9 @@
+## 0.1.4
+
+* Added examples for log sources and HTTP integrations.
+* Example: Fixed missing dispose.
+* Example: Upgraded dependencies.
+
 ## 0.1.3
 
 * Adopted more common LogLevel names.
