@@ -86,6 +86,57 @@ To access your logs in the log view:
 
 With this, all log events from your app will be displayed in the debug overlay.
 
+#### Example Log Sources
+
+* [Logger](https://pub.dev/packages/logger)
+   ```dart
+    import 'package:logger/logger.dart' hide LogEvent;
+    
+    // Connects logger to the overlay.
+    Logger.addOutputListener((event) {
+      LogLevel? level = LogLevel.values
+          .firstWhereOrNull((element) => element.name == event.origin.level.name);
+      if (level == null) return;
+      MyApp.logBucket.add(LogEvent(
+        level: level,
+        message: event.origin.message,
+        error: event.origin.error,
+        stackTrace: event.origin.stackTrace,
+        time: event.origin.time,
+      ));
+    });
+    ```
+
+* Flutter Errors (e.g. Rendering Exceptions)
+    ```dart
+    FlutterError.onError = (details) {
+      FlutterError.presentError(details);
+      MyApp.logBucket.add(LogEvent(
+        level: LogLevel.fatal,
+        message: details.exceptionAsString(),
+        error: (kDebugMode
+            ? details.toDiagnosticsNode().toStringDeep()
+            : details.exception.toString()),
+        stackTrace: details.stack,
+      ));
+    };
+    ```
+
+* Uncaught Exceptions
+    ```dart
+    PlatformDispatcher.instance.onError = (exception, stackTrace) {
+      MyApp.logBucket.add(LogEvent(
+        level: LogLevel.fatal,
+        message: "Unhandled Exception",
+        error: exception,
+        stackTrace: stackTrace,
+      ));
+      return false; // "false" still dumps it to the console.
+    };
+    ```
+
+More information: https://docs.flutter.dev/testing/errors#handling-all-types-of-errors
+
 ### Add HTTP requests
 
 To inspect HTTP requests:
@@ -93,14 +144,44 @@ To inspect HTTP requests:
 1. Create an instance of `HttpBucket`.
 2. Provide the instance to the `DebugOverlay` widget.
 3. Add your requests to the bucket:
-    * By using one of the provided middlewares
-        * `DioLogInterceptor` for the [`dio` package](https://pub.dev/packages/dio).
-        * `HttpClientLogAdapter` when utilizing the default `dart:io` client.
-        * and `HttpLogClient` for the [`http` package](https://pub.dev/packages/http).
-    * Manually via `add`.
+  * By using one of the provided middlewares
+    * `DioLogInterceptor` for the [`dio` package](https://pub.dev/packages/dio).
+    * `HttpClientLogAdapter` when utilizing the default `dart:io` client.
+    * and `HttpLogClient` for the [`http` package](https://pub.dev/packages/http).
+  * Manually via `add`.
 
 With this, all HTTP requests made within your app will be displayed and can be inspected in the
 debug overlay.
+
+#### Example HTTP Client Integrations
+
+* Dio
+    ```dart
+    dio = Dio()..interceptors.add(DioLogInterceptor(MyApp.httpBucket));
+    ```
+
+* HttpClient (`dart:io`)
+    ```dart
+    httpClient = HttpClient();
+    httpClientAdapter = HttpClientLogAdapter(MyApp.httpBucket);
+    ```
+  * Log request
+    ```dart
+    httpClientAdapter.onRequest(request);
+    ```
+  * Log response
+    ```dart
+    httpClientAdapter.onResponse(request, response, responseBody);
+    ```
+  * Log error
+    ```dart
+    httpClientAdapter.onError(request, error, stackTrace);
+    ```
+
+* "http"
+    ```dart
+    client = HttpLogClient(MyApp.httpBucket, http.Client());
+    ```
 
 ### Open the Overlay
 
