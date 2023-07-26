@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
@@ -21,9 +22,11 @@ void main() {
 
   // Connects logger to the overlay.
   Logger.addOutputListener((event) {
+    LogLevel? level = LogLevel.values
+        .firstWhereOrNull((element) => element.name == event.origin.level.name);
+    if (level == null) return;
     MyApp.logBucket.add(LogEvent(
-      level: LogLevel.values
-          .firstWhere((element) => element.name == event.origin.level.name),
+      level: level,
       message: event.origin.message,
       error: event.origin.error,
       stackTrace: event.origin.stackTrace,
@@ -159,14 +162,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                MyApp.logger.v(
+                                MyApp.logger.t(
                                   "Username including an '@' was entered.\n"
                                   "This has never happened before.\n\n\n"
                                   "And the reason for this ridiculous long logger message is to test the boundaries of my design.\n"
                                   "There is probably some guy who writes such long logs normally and uses them in production, therefore I try to test for such events.",
                                 );
                               },
-                              child: const Text("Verbose Log"),
+                              child: const Text("Trace Log"),
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -191,24 +194,24 @@ class _MyHomePageState extends State<MyHomePage> {
                               onPressed: () {
                                 MyApp.logger.e(
                                   "An error occurred.",
-                                  HttpException(
+                                  error: HttpException(
                                     "Failed to connect",
                                     uri: Uri.parse("https://www.google.com"),
                                   ),
-                                  StackTrace.current,
+                                  stackTrace: StackTrace.current,
                                 );
                               },
                               child: const Text("Error Log"),
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                MyApp.logger.wtf(
+                                MyApp.logger.f(
                                   "Render Engine stopped",
-                                  AssertionError("Rendering crashed"),
-                                  StackTrace.current,
+                                  error: AssertionError("Rendering crashed"),
+                                  stackTrace: StackTrace.current,
                                 );
                               },
-                              child: const Text("WTF Log"),
+                              child: const Text("Fatal Log"),
                             ),
                           ],
                         ),

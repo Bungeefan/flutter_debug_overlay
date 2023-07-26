@@ -11,8 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  collection: ^1.17.0
   universal_io: ^2.2.0
-  logger: ^1.3.0
+  logger: ^2.0.0
   http: ^1.0.0
   dio: ^5.0.2
 
