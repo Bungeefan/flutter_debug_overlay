@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 ///
 /// Similar to `package:logger`.
 enum LogLevel {
-  @Deprecated("Use [ŧrace] instead.")
+  @Deprecated("Use [trace] instead.")
   verbose,
   trace,
   debug,
