@@ -145,6 +145,7 @@ class _HttpLogPageState extends State<HttpLogPage> {
   Widget _buildMain(BuildContext context, bool split,
       Iterable<HttpInteraction> interactions) {
     return ListView.separated(
+      key: PageStorageKey(widget.bucket),
       itemCount: interactions.length,
       itemBuilder: (context, index) {
         return HttpLogItem(

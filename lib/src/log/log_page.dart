@@ -144,6 +144,7 @@ class _LogPageState extends State<LogPage> {
 
   Widget _buildMain(BuildContext context, bool split, Iterable<LogEvent> logs) {
     return ListView.separated(
+      key: PageStorageKey(widget.bucket),
       itemCount: logs.length,
       itemBuilder: (context, index) {
         return LogItem(

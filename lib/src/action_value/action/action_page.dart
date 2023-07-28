@@ -13,6 +13,7 @@ class ActionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+      key: PageStorageKey(entries),
       itemCount: entries.length,
       itemBuilder: (context, index) {
         DebugAction? debugAction = entries[index];

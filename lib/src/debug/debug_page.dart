@@ -20,6 +20,7 @@ class DebugPage extends StatelessWidget {
     }
 
     return ListView.separated(
+      key: PageStorageKey(entries),
       itemCount: entries.length,
       itemBuilder: (context, index) => entries[index],
       separatorBuilder: (context, index) => const Divider(),

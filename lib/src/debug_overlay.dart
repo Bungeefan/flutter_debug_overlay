@@ -191,6 +191,7 @@ class DebugOverlay extends StatefulWidget {
 class DebugOverlayState extends State<DebugOverlay> {
   late HeroController _heroController;
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
+  final PageStorageBucket _storageBucket = PageStorageBucket();
   BackButtonDispatcher? _backButtonDispatcher;
 
   final List<DebugAction> _actions = [];
@@ -266,59 +267,62 @@ class DebugOverlayState extends State<DebugOverlay> {
   }
 
   Widget _buildOverlay(BuildContext context) {
-    return Opacity(
-      opacity: widget.opacity,
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          appBarTheme: Theme.of(context).appBarTheme.copyWith(
-                foregroundColor: Theme.of(context).colorScheme.onSurface,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-              ),
-          scaffoldBackgroundColor: Theme.of(context)
-              .scaffoldBackgroundColor
-              .withOpacity(widget.opacity),
-        ),
-        child: HeroControllerScope(
-          controller: _heroController,
-          child: ScaffoldMessenger(
-            child: Navigator(
-              key: _navigatorKey,
-              onGenerateRoute: (settings) => MaterialPageRoute(
-                settings: settings,
-                builder: (context) {
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: const Text("Debug"),
-                      actions: [
-                        CloseButton(onPressed: toggleVisibility),
-                      ],
-                    ),
-                    body: SwitcherWidget(
-                      initialIndex: widget.initialTabIndex,
-                      physics: !Theme.of(context).useMaterial3
-                          ? const BouncingScrollPhysics()
-                          : null,
-                      items: {
-                        "Debug": DebugPage(entries: widget.debugEntries),
-                        if (widget.infoEntries.isNotEmpty)
-                          "Info": InfoPage(entries: widget.infoEntries),
-                        if (widget.logBucket != null)
-                          "Logs": LogPage(bucket: widget.logBucket!),
-                        if (widget.httpBucket != null)
-                          "HTTP": HttpLogPage(
-                            bucket: widget.httpBucket!,
-                            hiddenFields: widget.hiddenFields,
-                          ),
-                        if (_actions.isNotEmpty || _values.isNotEmpty)
-                          "Actions/Values": ActionValuePage(
-                            actions: _actions,
-                            values: _values,
-                          ),
-                      },
-                    ),
-                  );
-                },
+    return PageStorage(
+      bucket: _storageBucket,
+      child: Opacity(
+        opacity: widget.opacity,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                ),
+            scaffoldBackgroundColor: Theme.of(context)
+                .scaffoldBackgroundColor
+                .withOpacity(widget.opacity),
+          ),
+          child: HeroControllerScope(
+            controller: _heroController,
+            child: ScaffoldMessenger(
+              child: Navigator(
+                key: _navigatorKey,
+                onGenerateRoute: (settings) => MaterialPageRoute(
+                  settings: settings,
+                  builder: (context) {
+                    return Scaffold(
+                      appBar: AppBar(
+                        title: const Text("Debug"),
+                        actions: [
+                          CloseButton(onPressed: toggleVisibility),
+                        ],
+                      ),
+                      body: SwitcherWidget(
+                        initialIndex: widget.initialTabIndex,
+                        physics: !Theme.of(context).useMaterial3
+                            ? const BouncingScrollPhysics()
+                            : null,
+                        items: {
+                          "Debug": DebugPage(entries: widget.debugEntries),
+                          if (widget.infoEntries.isNotEmpty)
+                            "Info": InfoPage(entries: widget.infoEntries),
+                          if (widget.logBucket != null)
+                            "Logs": LogPage(bucket: widget.logBucket!),
+                          if (widget.httpBucket != null)
+                            "HTTP": HttpLogPage(
+                              bucket: widget.httpBucket!,
+                              hiddenFields: widget.hiddenFields,
+                            ),
+                          if (_actions.isNotEmpty || _values.isNotEmpty)
+                            "Actions/Values": ActionValuePage(
+                              actions: _actions,
+                              values: _values,
+                            ),
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
