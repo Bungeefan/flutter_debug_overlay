@@ -14,6 +14,7 @@ class InfoPage extends StatefulWidget {
 
 class _InfoPageState extends State<InfoPage>
     with AutomaticKeepAliveClientMixin {
+  // Re-calculating the information is expensive.
   @override
   bool get wantKeepAlive => true;
 

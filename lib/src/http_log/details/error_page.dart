@@ -31,6 +31,7 @@ class ErrorPageState extends State<ErrorPage>
 
   bool isEncodable = false;
 
+  // Saves the open/closed states and scroll position.
   @override
   bool get wantKeepAlive => true;
 

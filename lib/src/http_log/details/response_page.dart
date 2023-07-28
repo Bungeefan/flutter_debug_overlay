@@ -27,6 +27,7 @@ class ResponsePageState extends State<ResponsePage>
   late final JsonController _bodyController;
   late final JsonController _dataController;
 
+  // Saves the open/closed states and scroll position.
   @override
   bool get wantKeepAlive => true;
 

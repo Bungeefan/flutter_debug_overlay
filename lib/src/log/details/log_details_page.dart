@@ -16,14 +16,9 @@ class LogDetailsPage extends StatefulWidget {
   State<LogDetailsPage> createState() => _LogDetailsPageState();
 }
 
-class _LogDetailsPageState extends State<LogDetailsPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _LogDetailsPageState extends State<LogDetailsPage> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     List<Widget> children = [
       DataCard(
         child: LayoutBuilder(builder: (context, constraints) {
