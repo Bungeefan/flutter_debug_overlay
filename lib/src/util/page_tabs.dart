@@ -2,45 +2,27 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class SwitcherWidget extends StatefulWidget {
+class PageTabs extends StatelessWidget {
   final Map<String, Widget> items;
-  final int initialIndex;
+  final PageController controller;
+  final int currentItem;
+  final ValueChanged<int> onTabPressed;
+  final ValueChanged<int> onPageChanged;
   final ScrollPhysics? physics;
   final double horizontalPadding;
   final Widget? child;
 
-  const SwitcherWidget({
+  const PageTabs({
     super.key,
     required this.items,
-    this.initialIndex = 0,
+    required this.currentItem,
+    required this.controller,
+    required this.onTabPressed,
+    required this.onPageChanged,
     this.physics,
     this.horizontalPadding = 12.0,
     this.child,
   });
-
-  @override
-  State<SwitcherWidget> createState() => _SwitcherWidgetState();
-}
-
-class _SwitcherWidgetState extends State<SwitcherWidget> {
-  late int currentItem;
-  late final PageController pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    currentItem = widget.initialIndex;
-    pageController = PageController(initialPage: currentItem);
-  }
-
-  @override
-  void didUpdateWidget(covariant SwitcherWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (currentItem >= widget.items.length) {
-      currentItem = widget.initialIndex;
-      pageController.jumpToPage(currentItem);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,14 +30,14 @@ class _SwitcherWidgetState extends State<SwitcherWidget> {
     final int page = currentItem;
 
     selected = [
-      for (int i = 0; i < widget.items.length; i++) i == page,
+      for (int i = 0; i < items.length; i++) i == page,
     ];
 
     return Column(
       children: [
-        if (widget.items.length > 1)
+        if (items.length > 1)
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: LayoutBuilder(builder: (context, constraints) {
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -68,16 +50,7 @@ class _SwitcherWidgetState extends State<SwitcherWidget> {
                   height: 40,
                   child: ToggleButtons(
                     borderRadius: BorderRadius.circular(20),
-                    onPressed: (index) async {
-                      currentItem = index;
-                      setState(() {});
-                      pageController.jumpToPage(index);
-                      // pageController.animateToPage(
-                      //   index,
-                      //   duration: kThemeAnimationDuration,
-                      //   curve: Curves.easeInOut,
-                      // );
-                    },
+                    onPressed: (index) => onTabPressed.call(index),
                     textStyle: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 18,
@@ -85,7 +58,7 @@ class _SwitcherWidgetState extends State<SwitcherWidget> {
                     constraints: BoxConstraints(
                       minWidth: max(
                         48.0,
-                        (constraints.maxWidth) / widget.items.length,
+                        (constraints.maxWidth) / items.length,
                       ),
                       minHeight: double.infinity,
                     ),
@@ -94,7 +67,7 @@ class _SwitcherWidgetState extends State<SwitcherWidget> {
                     selectedColor: Theme.of(context).colorScheme.onPrimary,
                     fillColor: Theme.of(context).colorScheme.primary,
                     children: [
-                      for (String itemName in widget.items.keys)
+                      for (String itemName in items.keys)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: FittedBox(
@@ -108,37 +81,27 @@ class _SwitcherWidgetState extends State<SwitcherWidget> {
               );
             }),
           ),
-        if (widget.child != null)
+        if (child != null)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: widget.child!,
+            child: child!,
           ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: PageView.builder(
-              physics: widget.physics,
-              controller: pageController,
-              onPageChanged: (index) {
-                currentItem = index;
-                setState(() {});
-              },
-              itemCount: widget.items.length,
+              physics: physics,
+              controller: controller,
+              onPageChanged: (index) => onPageChanged.call(index),
+              itemCount: items.length,
               itemBuilder: (context, index) => Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: widget.horizontalPadding),
-                child: widget.items.values.toList()[index],
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: items.values.toList()[index],
               ),
             ),
           ),
         ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    pageController.dispose();
-    super.dispose();
   }
 }

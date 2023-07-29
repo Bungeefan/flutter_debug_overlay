@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../util/data_card.dart';
 import '../../util/expandable_card.dart';
-import '../../util/switcher_widget.dart';
+import '../../util/page_tab_switcher.dart';
 import '../http_interaction.dart';
 import 'error_page.dart';
 import 'request_page.dart';
@@ -156,7 +156,7 @@ class _HttpLogDetailsPageState extends State<HttpLogDetailsPage> {
       ),
     ];
 
-    return SwitcherWidget(
+    return PageTabSwitcher(
       physics: !Theme.of(context).useMaterial3
           ? const BouncingScrollPhysics()
           : null,

@@ -18,7 +18,7 @@ import 'info/info_page.dart';
 import 'log/log_page.dart';
 import 'util/http_bucket.dart';
 import 'util/log_bucket.dart';
-import 'util/switcher_widget.dart';
+import 'util/page_tab_switcher.dart';
 
 typedef DetectorBuilder = Widget Function(VoidCallback onDetect, Widget child);
 
@@ -297,7 +297,7 @@ class DebugOverlayState extends State<DebugOverlay> {
                           CloseButton(onPressed: toggleVisibility),
                         ],
                       ),
-                      body: SwitcherWidget(
+                      body: PageTabSwitcher(
                         initialIndex: widget.initialTabIndex,
                         physics: !Theme.of(context).useMaterial3
                             ? const BouncingScrollPhysics()
