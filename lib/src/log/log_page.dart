@@ -20,9 +20,12 @@ class LogPage extends StatefulWidget {
   State<LogPage> createState() => _LogPageState();
 }
 
-class _LogPageState extends State<LogPage> {
+class _LogPageState extends State<LogPage> with AutomaticKeepAliveClientMixin {
   List<LogEvent> events = [];
   LogEvent? currentEntry;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -60,6 +63,8 @@ class _LogPageState extends State<LogPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Column(
       children: [
         Padding(

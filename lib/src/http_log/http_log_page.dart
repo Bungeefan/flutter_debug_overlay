@@ -22,9 +22,13 @@ class HttpLogPage extends StatefulWidget {
   State<HttpLogPage> createState() => _HttpLogPageState();
 }
 
-class _HttpLogPageState extends State<HttpLogPage> {
+class _HttpLogPageState extends State<HttpLogPage>
+    with AutomaticKeepAliveClientMixin {
   List<HttpInteraction> interactions = [];
   HttpInteraction? currentEntry;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -62,6 +66,8 @@ class _HttpLogPageState extends State<HttpLogPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Column(
       children: [
         Padding(
