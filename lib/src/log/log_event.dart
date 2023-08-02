@@ -4,17 +4,23 @@ import 'package:flutter/material.dart';
 ///
 /// Similar to `package:logger`.
 enum LogLevel {
+  all(0),
   @Deprecated("Use [trace] instead.")
-  verbose,
-  trace,
-  debug,
-  info,
-  warning,
-  error,
+  verbose(999),
+  trace(1000),
+  debug(2000),
+  info(3000),
+  warning(4000),
+  error(5000),
   @Deprecated("Use [fatal] instead.")
-  wtf,
-  fatal,
+  wtf(5999),
+  fatal(6000),
+  off(10000),
   ;
+
+  final int value;
+
+  const LogLevel(this.value);
 }
 
 /// Describes a single log event.
@@ -41,6 +47,12 @@ class LogEvent {
   MaterialColor get levelColor => getLevelColor(level);
 
   static MaterialColor getLevelColor(LogLevel level) {
+    var color = getLevelColorOrNull(level);
+    if (color == null) throw ArgumentError.value(level.name, "LogLevel");
+    return color;
+  }
+
+  static MaterialColor? getLevelColorOrNull(LogLevel level) {
     switch (level) {
       // ignore: deprecated_member_use_from_same_package
       case LogLevel.wtf:
@@ -58,6 +70,8 @@ class LogEvent {
       case LogLevel.verbose:
       case LogLevel.trace:
         return Colors.grey;
+      default:
+        return null;
     }
   }
 }

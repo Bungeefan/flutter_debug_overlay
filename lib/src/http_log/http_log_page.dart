@@ -2,7 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../util/filter_mixin.dart';
 import '../util/http_bucket.dart';
+import '../util/search_field.dart';
+import '../util/search_mixin.dart';
 import '../util/split_page.dart';
 import 'details/http_log_details_page.dart';
 import 'http_interaction.dart';
@@ -23,7 +26,7 @@ class HttpLogPage extends StatefulWidget {
 }
 
 class _HttpLogPageState extends State<HttpLogPage>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, FilterCapability, SearchCapability {
   List<HttpInteraction> interactions = [];
   HttpInteraction? currentEntry;
 
@@ -52,8 +55,37 @@ class _HttpLogPageState extends State<HttpLogPage>
     super.dispose();
   }
 
+  @override
+  void updateFilter() {
+    _updateBucket();
+  }
+
   void _updateBucket() {
-    interactions = widget.bucket.entries.sortedByCompare<DateTime?>(
+    Iterable<HttpInteraction> stream = widget.bucket.entries;
+    if (filterEnabled) {
+      if (searchFilter?.isNotEmpty ?? false) {
+        List<String> searchQueries = searchFilter!.split(RegExp("\\s"));
+        stream = stream.where((e) {
+          for (String query in searchQueries) {
+            bool match = [
+              e.uri,
+              e.method,
+              e.request?.time,
+              e.response?.statusCode,
+              e.response?.time,
+              e.error?.time,
+              e.error?.error,
+            ].any((element) =>
+                element?.toString().toLowerCase().contains(query) ?? false);
+            if (!match) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+    }
+    interactions = stream.sortedByCompare<DateTime?>(
       (event) => event.request?.time ?? event.responseTime,
       (a, b) => a != null && b != null ? b.compareTo(a) : -1,
     );
@@ -82,6 +114,20 @@ class _HttpLogPageState extends State<HttpLogPage>
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: IconButton(
+                  splashRadius: 25,
+                  tooltip: "Toggle Filter",
+                  icon: Icon(
+                    filterEnabled
+                        ? Icons.filter_alt
+                        : Icons.filter_alt_outlined,
+                  ),
+                  onPressed: toggleFilter,
+                ),
+              ),
+              const Spacer(),
               TextButton.icon(
                 onPressed: widget.bucket.entries.isNotEmpty
                     ? () {
@@ -100,30 +146,18 @@ class _HttpLogPageState extends State<HttpLogPage>
           ),
         ),
         Expanded(
-          child: _buildPage(context),
+          child: SplitPage(
+            mainBuilder: (context, split) =>
+                _buildMain(context, split, interactions),
+            detailBuilder: _buildDetail,
+            onSplitChange: (split) {
+              if (!split) {
+                _openHttpLogDetails(context);
+              }
+            },
+          ),
         ),
       ],
-    );
-  }
-
-  Widget _buildPage(BuildContext context) {
-    if (interactions.isEmpty) {
-      return Center(
-        child: Text(
-          "No requests",
-          style: Theme.of(context).textTheme.titleLarge!,
-        ),
-      );
-    }
-
-    return SplitPage(
-      mainBuilder: (context, split) => _buildMain(context, split, interactions),
-      detailBuilder: _buildDetail,
-      onSplitChange: (split) {
-        if (!split) {
-          _openHttpLogDetails(context);
-        }
-      },
     );
   }
 
@@ -150,6 +184,39 @@ class _HttpLogPageState extends State<HttpLogPage>
 
   Widget _buildMain(BuildContext context, bool split,
       Iterable<HttpInteraction> interactions) {
+    return Column(
+      children: [
+        if (filterEnabled)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SearchField(
+                    controller: searchController,
+                    onSearch: onSearch,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        Expanded(
+          child: _buildLogsList(split, interactions),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLogsList(bool split, Iterable<HttpInteraction> interactions) {
+    if (interactions.isEmpty) {
+      return Center(
+        child: Text(
+          "No requests",
+          style: Theme.of(context).textTheme.titleLarge!,
+        ),
+      );
+    }
+
     return ListView.separated(
       key: PageStorageKey(widget.bucket),
       itemCount: interactions.length,

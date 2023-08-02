@@ -2,9 +2,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../util/filter_mixin.dart';
 import '../util/log_bucket.dart';
+import '../util/search_field.dart';
+import '../util/search_mixin.dart';
 import '../util/split_page.dart';
 import 'details/log_details_page.dart';
+import 'level_selector.dart';
 import 'log_event.dart';
 import 'log_item.dart';
 
@@ -20,9 +24,12 @@ class LogPage extends StatefulWidget {
   State<LogPage> createState() => _LogPageState();
 }
 
-class _LogPageState extends State<LogPage> with AutomaticKeepAliveClientMixin {
+class _LogPageState extends State<LogPage>
+    with AutomaticKeepAliveClientMixin, FilterCapability, SearchCapability {
   List<LogEvent> events = [];
   LogEvent? currentEntry;
+
+  LogLevel levelFilter = LogLevel.all;
 
   @override
   bool get wantKeepAlive => true;
@@ -50,7 +57,30 @@ class _LogPageState extends State<LogPage> with AutomaticKeepAliveClientMixin {
   }
 
   void _updateBucket() {
-    events = widget.bucket.entries.sortedByCompare<DateTime>(
+    Iterable<LogEvent> stream = widget.bucket.entries;
+    if (filterEnabled) {
+      if (levelFilter != LogLevel.all) {
+        stream = stream.where((e) => e.level.value >= levelFilter.value);
+      }
+      if (searchFilter?.isNotEmpty ?? false) {
+        List<String> searchQueries = searchFilter!.split(RegExp("\\s"));
+        stream = stream.where((e) {
+          for (String query in searchQueries) {
+            bool match = [
+              e.message,
+              e.error,
+              e.time,
+            ].any((element) =>
+                element?.toString().toLowerCase().contains(query) ?? false);
+            if (!match) {
+              return false;
+            }
+          }
+          return true;
+        });
+      }
+    }
+    events = stream.sortedByCompare<DateTime>(
       (event) => event.time,
       (a, b) => b.compareTo(a),
     );
@@ -70,7 +100,6 @@ class _LogPageState extends State<LogPage> with AutomaticKeepAliveClientMixin {
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
                 "Logs",
@@ -79,6 +108,20 @@ class _LogPageState extends State<LogPage> with AutomaticKeepAliveClientMixin {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: IconButton(
+                  splashRadius: 25,
+                  tooltip: "Toggle Filter",
+                  icon: Icon(
+                    filterEnabled
+                        ? Icons.filter_alt
+                        : Icons.filter_alt_outlined,
+                  ),
+                  onPressed: toggleFilter,
+                ),
+              ),
+              const Spacer(),
               TextButton.icon(
                 onPressed: widget.bucket.entries.isNotEmpty
                     ? () {
@@ -97,31 +140,23 @@ class _LogPageState extends State<LogPage> with AutomaticKeepAliveClientMixin {
           ),
         ),
         Expanded(
-          child: _buildPage(context),
+          child: SplitPage(
+            mainBuilder: (context, split) => _buildMain(context, split, events),
+            detailBuilder: _buildDetail,
+            onSplitChange: (split) {
+              if (!split) {
+                _openLogDetails(context);
+              }
+            },
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildPage(BuildContext context) {
-    if (events.isEmpty) {
-      return Center(
-        child: Text(
-          "No logs",
-          style: Theme.of(context).textTheme.titleLarge!,
-        ),
-      );
-    }
-
-    return SplitPage(
-      mainBuilder: (context, split) => _buildMain(context, split, events),
-      detailBuilder: _buildDetail,
-      onSplitChange: (split) {
-        if (!split) {
-          _openLogDetails(context);
-        }
-      },
-    );
+  @override
+  void updateFilter() {
+    _updateBucket();
   }
 
   void _openLogDetails(BuildContext context) {
@@ -148,6 +183,52 @@ class _LogPageState extends State<LogPage> with AutomaticKeepAliveClientMixin {
   }
 
   Widget _buildMain(BuildContext context, bool split, Iterable<LogEvent> logs) {
+    return Column(
+      children: [
+        if (filterEnabled)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: SearchField(
+                    controller: searchController,
+                    onSearch: onSearch,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: LevelSelector(
+                    level: levelFilter,
+                    onLevelChanged: (level) {
+                      if (level != levelFilter) {
+                        levelFilter = level;
+                        updateFilter();
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        Expanded(
+          child: _buildLogsList(split, logs),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLogsList(bool split, Iterable<LogEvent> logs) {
+    if (logs.isEmpty) {
+      return Center(
+        child: Text(
+          "No logs",
+          style: Theme.of(context).textTheme.titleLarge!,
+        ),
+      );
+    }
+
     return ListView.separated(
       key: PageStorageKey(widget.bucket),
       itemCount: logs.length,
