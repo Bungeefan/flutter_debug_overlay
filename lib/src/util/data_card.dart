@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DataCard extends StatelessWidget {
+  final bool selected;
   final GestureTapCallback? onTap;
   final BoxConstraints? constraints;
   final EdgeInsetsGeometry padding;
@@ -8,6 +9,7 @@ class DataCard extends StatelessWidget {
 
   const DataCard({
     super.key,
+    this.selected = false,
     this.onTap,
     this.constraints,
     this.padding = const EdgeInsets.all(16),
@@ -16,11 +18,16 @@ class DataCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var themeData = Theme.of(context);
     Widget card = Card(
-      elevation: Theme.of(context).useMaterial3 ? null : 0.0,
+      elevation: themeData.useMaterial3 ? null : 0.0,
+      color: selected ? themeData.colorScheme.secondaryContainer : null,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
+        side: selected
+            ? BorderSide(color: themeData.colorScheme.secondary)
+            : BorderSide.none,
       ),
       child: InkWell(
         onTap: onTap,

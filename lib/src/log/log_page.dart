@@ -233,11 +233,14 @@ class _LogPageState extends State<LogPage>
       key: PageStorageKey(widget.bucket),
       itemCount: logs.length,
       itemBuilder: (context, index) {
+        var logEvent = logs.elementAt(index);
         return LogItem(
-          key: ObjectKey(logs.elementAt(index)),
-          entry: logs.elementAt(index),
+          key: ObjectKey(logEvent),
+          entry: logEvent,
+          selected:
+              split && currentEntry != null ? currentEntry == logEvent : false,
           onSelected: () {
-            currentEntry = logs.elementAt(index);
+            currentEntry = logEvent;
             if (split) {
               setState(() {});
             } else {

@@ -6,11 +6,13 @@ import 'log_event.dart';
 
 class LogItem extends StatelessWidget {
   final LogEvent entry;
+  final bool selected;
   final void Function() onSelected;
 
   const LogItem({
     super.key,
     required this.entry,
+    this.selected = false,
     required this.onSelected,
   });
 
@@ -19,6 +21,7 @@ class LogItem extends StatelessWidget {
     MaterialColor effectiveLevelColor = entry.levelColor;
 
     return DataCard(
+      selected: selected,
       onTap: onSelected,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

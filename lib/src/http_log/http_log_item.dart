@@ -6,11 +6,13 @@ import 'http_interaction.dart';
 
 class HttpLogItem extends StatelessWidget {
   final HttpInteraction entry;
+  final bool selected;
   final void Function() onSelected;
 
   const HttpLogItem({
     super.key,
     required this.entry,
+    this.selected = false,
     required this.onSelected,
   });
 
@@ -22,6 +24,7 @@ class HttpLogItem extends StatelessWidget {
     MaterialColor effectiveDurationColor = entry.durationColor;
 
     return DataCard(
+      selected: selected,
       onTap: onSelected,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

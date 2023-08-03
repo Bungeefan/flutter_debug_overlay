@@ -221,11 +221,15 @@ class _HttpLogPageState extends State<HttpLogPage>
       key: PageStorageKey(widget.bucket),
       itemCount: interactions.length,
       itemBuilder: (context, index) {
+        var httpInteraction = interactions.elementAt(index);
         return HttpLogItem(
-          key: ObjectKey(interactions.elementAt(index)),
-          entry: interactions.elementAt(index),
+          key: ObjectKey(httpInteraction),
+          entry: httpInteraction,
+          selected: split && currentEntry != null
+              ? currentEntry == httpInteraction
+              : false,
           onSelected: () {
-            currentEntry = interactions.elementAt(index);
+            currentEntry = httpInteraction;
             if (split) {
               setState(() {});
             } else {
