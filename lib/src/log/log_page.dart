@@ -47,7 +47,7 @@ class _LogPageState extends State<LogPage> {
   }
 
   void _updateBucket() {
-    events = widget.bucket.entries.sortedByCompare(
+    events = widget.bucket.entries.sortedByCompare<DateTime>(
       (event) => event.time,
       (a, b) => b.compareTo(a),
     );

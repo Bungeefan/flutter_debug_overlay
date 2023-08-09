@@ -49,7 +49,7 @@ class _HttpLogPageState extends State<HttpLogPage> {
   }
 
   void _updateBucket() {
-    interactions = widget.bucket.entries.sortedByCompare(
+    interactions = widget.bucket.entries.sortedByCompare<DateTime?>(
       (event) => event.request?.time ?? event.responseTime,
       (a, b) => a != null && b != null ? b.compareTo(a) : -1,
     );
