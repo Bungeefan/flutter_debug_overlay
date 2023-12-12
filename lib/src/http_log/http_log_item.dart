@@ -56,30 +56,38 @@ class HttpLogItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 15),
-                    Text(
-                      entry.method?.toUpperCase() ?? "-",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Text(
+                        entry.method?.toUpperCase() ?? "-",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                     ),
-                    const Spacer(),
                     if (duration != null)
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: effectiveDurationColor.shade50,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 6,
-                            horizontal: 12,
-                          ),
-                          child: Text(
-                            "${duration.inMilliseconds}ms",
-                            style: TextStyle(
-                              color: effectiveDurationColor.shade900,
-                              fontWeight: FontWeight.bold,
+                      Flexible(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: effectiveDurationColor.shade50,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 12,
+                              ),
+                              child: Text(
+                                duration.toHumanString(),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: effectiveDurationColor.shade900,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ),

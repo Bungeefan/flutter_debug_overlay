@@ -63,3 +63,15 @@ abstract class Utils {
     return Encoding.getByName(mediaType?.parameters['charset']) ?? utf8;
   }
 }
+
+extension DurationPresentation on Duration {
+  String toHumanString() {
+    if (inMinutes >= 10) {
+      return "${(inSeconds / 1000).toStringAsFixed(3)}m";
+    }
+    if (inSeconds >= 10) {
+      return "${(inMilliseconds / 1000).toStringAsFixed(3)}s";
+    }
+    return "${inMilliseconds}ms";
+  }
+}
