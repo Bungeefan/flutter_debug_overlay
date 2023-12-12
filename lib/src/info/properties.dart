@@ -374,7 +374,7 @@ class DebugIterableProperty<T> extends DebugProperty<Iterable<T>> {
   }
 }
 
-class DebugEnumProperty<T> extends DebugProperty<T> {
+class DebugEnumProperty<T extends Enum?> extends DebugProperty<T> {
   /// Create a diagnostics property that displays an enum.
   DebugEnumProperty(
     String super.name,
@@ -387,6 +387,6 @@ class DebugEnumProperty<T> extends DebugProperty<T> {
     if (value == null) {
       return value.toString();
     }
-    return describeEnum(value!);
+    return value!.name;
   }
 }

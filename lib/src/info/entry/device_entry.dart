@@ -35,7 +35,7 @@ class DeviceInfoEntry extends StatelessWidget {
     final info = await DeviceInfoPlugin().webBrowserInfo;
     return [
       DebugBlock(
-        name: "Browser: ${describeEnum(info.browserName)}",
+        name: "Browser: ${info.browserName.name}",
         properties: [
           DebugStringProperty(
             "Vendor",
