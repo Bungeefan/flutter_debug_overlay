@@ -303,7 +303,8 @@ class DebugOverlayState extends State<DebugOverlay> {
                             ? const BouncingScrollPhysics()
                             : null,
                         items: {
-                          "Debug": DebugPage(entries: widget.debugEntries),
+                          if (widget.debugEntries.isNotEmpty)
+                            "Debug": DebugPage(entries: widget.debugEntries),
                           if (widget.infoEntries.isNotEmpty)
                             "Info": InfoPage(entries: widget.infoEntries),
                           if (widget.logBucket != null)
@@ -319,6 +320,12 @@ class DebugOverlayState extends State<DebugOverlay> {
                               values: _values,
                             ),
                         },
+                        placeholderBuilder: (context) => Center(
+                          child: Text(
+                            "No entries configured",
+                            style: Theme.of(context).textTheme.titleLarge!,
+                          ),
+                        ),
                       ),
                     );
                   },

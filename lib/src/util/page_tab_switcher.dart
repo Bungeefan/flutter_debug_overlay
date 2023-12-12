@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_debug_overlay/src/util/page_tabs.dart';
+
+import 'page_tabs.dart';
 
 class PageTabSwitcher extends StatefulWidget {
+  final Widget? subHeader;
   final Map<String, Widget> items;
+  final WidgetBuilder? placeholderBuilder;
   final PageController? controller;
   final ValueChanged<int>? onPageChanged;
   final int initialIndex;
   final ScrollPhysics? physics;
   final double horizontalPadding;
-  final Widget? child;
 
   const PageTabSwitcher({
     super.key,
+    this.subHeader,
     required this.items,
+    this.placeholderBuilder,
     this.controller,
     this.onPageChanged,
     this.initialIndex = 0,
     this.physics,
     this.horizontalPadding = 12.0,
-    this.child,
   });
 
   @override
@@ -52,14 +55,15 @@ class PageTabSwitcherState extends State<PageTabSwitcher> {
   @override
   Widget build(BuildContext context) {
     return PageTabs(
+      subHeader: widget.subHeader,
       onTabPressed: onTabPressed,
       onPageChanged: onPageChanged,
       controller: controller,
       currentItem: currentItem,
       items: widget.items,
+      placeholderBuilder: widget.placeholderBuilder,
       physics: widget.physics,
       horizontalPadding: widget.horizontalPadding,
-      child: widget.child,
     );
   }
 

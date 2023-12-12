@@ -3,25 +3,27 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class PageTabs extends StatelessWidget {
+  final Widget? subHeader;
   final Map<String, Widget> items;
-  final PageController controller;
   final int currentItem;
+  final WidgetBuilder? placeholderBuilder;
+  final PageController controller;
   final ValueChanged<int> onTabPressed;
   final ValueChanged<int> onPageChanged;
   final ScrollPhysics? physics;
   final double horizontalPadding;
-  final Widget? child;
 
   const PageTabs({
     super.key,
+    this.subHeader,
     required this.items,
     required this.currentItem,
+    this.placeholderBuilder,
     required this.controller,
     required this.onTabPressed,
     required this.onPageChanged,
     this.physics,
     this.horizontalPadding = 12.0,
-    this.child,
   });
 
   @override
@@ -81,10 +83,10 @@ class PageTabs extends StatelessWidget {
               );
             }),
           ),
-        if (child != null)
+        if (subHeader != null)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: child!,
+            child: subHeader!,
           ),
         Expanded(
           child: Padding(
@@ -93,10 +95,14 @@ class PageTabs extends StatelessWidget {
               physics: physics,
               controller: controller,
               onPageChanged: (index) => onPageChanged.call(index),
-              itemCount: items.length,
+              itemCount: items.isEmpty && placeholderBuilder != null
+                  ? 1
+                  : items.length,
               itemBuilder: (context, index) => Padding(
                 padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: items.values.toList()[index],
+                child: items.isNotEmpty
+                    ? items.values.toList()[index]
+                    : placeholderBuilder!.call(context),
               ),
             ),
           ),
