@@ -1,6 +1,6 @@
 name: flutter_debug_overlay
 description: Flutter package for implementing a debug overlay in your app, providing features like log viewers, HTTP request inspectors, and customizable widgets for easy debugging.
-version: 0.1.4
+version: 0.1.5
 repository: "https://github.com/Bungeefan/flutter_debug_overlay"
 
 environment:

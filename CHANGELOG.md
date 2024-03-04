@@ -1,3 +1,13 @@
+## 0.1.5
+
+* Fixed LICENSE detection.
+* Added filter to search logs and requests.
+* Added entry highlighting for selected logs and requests.
+* Added PageStorage to persist scroll positions.
+* Improved formatting of request duration.
+* Improved and documented usages of AutomaticKeepAliveClientMixins.
+* Removed deprecated `describeEnum` usages.
+
 ## 0.1.4
 
 * Added examples for log sources and HTTP integrations.
