@@ -41,7 +41,7 @@ class MediaQueryInfoEntry extends StatelessWidget {
       ),
       DebugDoubleProperty(
         "Text Scale Factor",
-        data.textScaleFactor,
+        data.textScaler.scale(1),
         defaultValue: 1,
         tooltip: "The number of font pixels for each logical pixel",
       ),
