@@ -1,3 +1,8 @@
+## 0.1.6
+
+* Increased upper version range for `package_info_plus`.
+* Replaced `textScaleFactor` usages with `textScaler`.
+
 ## 0.1.5
 
 * Fixed LICENSE detection.
