@@ -166,32 +166,9 @@ class DeviceInfoEntry extends StatelessWidget {
           DebugStringProperty("Changelist Number / Label", info.id),
         ],
         children: [
-          DebugBlock(
-            name: "Display",
-            properties: [
-              DebugStringProperty(
-                "Built ID",
-                info.display,
-              ),
-              DebugDoubleProperty(
-                "Width",
-                unit: "px",
-                info.displayMetrics.widthPx,
-              ),
-              DebugDoubleProperty(
-                "Height",
-                unit: "px",
-                info.displayMetrics.heightPx,
-              ),
-              DebugDoubleProperty(
-                "X pixels per Inch",
-                info.displayMetrics.xDpi,
-              ),
-              DebugDoubleProperty(
-                "Y pixels per Inch",
-                info.displayMetrics.yDpi,
-              ),
-            ],
+          DebugStringProperty(
+            "Display Build ID",
+            info.display,
           ),
         ],
       ),
