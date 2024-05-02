@@ -1,3 +1,8 @@
+## 0.1.7
+
+* Further increased upper version range for `package_info_plus`. Thanks to
+  @hakonber ([#5](https://github.com/Bungeefan/flutter_debug_overlay/issues/5)).
+
 ## 0.1.6
 
 * Increased upper version range for `package_info_plus`.
