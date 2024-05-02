@@ -1,3 +1,7 @@
+## 0.1.8
+
+* Increased version range for `device_info_plus`.
+
 ## 0.1.7
 
 * Further increased upper version range for `package_info_plus`. Thanks to
