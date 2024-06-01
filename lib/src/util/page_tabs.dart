@@ -47,7 +47,8 @@ class PageTabs extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                   ),
                   height: 40,
                   child: ToggleButtons(
