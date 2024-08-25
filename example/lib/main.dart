@@ -82,8 +82,8 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: "Flutter Debug Demo",
       themeMode: _forcedTheme ?? ThemeMode.system,
-      theme: ThemeData(useMaterial3: true),
-      darkTheme: ThemeData.dark(useMaterial3: true),
+      theme: ThemeData(),
+      darkTheme: ThemeData.dark(),
       builder: DebugOverlay.builder(
         logBucket: MyApp.logBucket,
         httpBucket: MyApp.httpBucket,
