@@ -1,3 +1,11 @@
+## 0.1.9
+
+* Increased version range for `device_info_plus`.
+* Added some missing `MediaQuery` properties.
+* Fixed Dart (`>=3.4.0`) and Flutter (`>=3.22.0`) versions to reflect the actual constraints.
+* Enabled trimming of stack traces in log view.
+* Added pub.dev `topics`.
+
 ## 0.1.8
 
 * Increased version range for `device_info_plus`.
