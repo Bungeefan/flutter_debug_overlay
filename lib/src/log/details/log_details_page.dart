@@ -88,8 +88,8 @@ class _LogDetailsPageState extends State<LogDetailsPage> {
         ExpandableCard(
           title: const Text("Stack Trace"),
           expanded: true,
-          child: widget.entry.stackTrace.toString().isNotEmpty
-              ? SelectableText(widget.entry.stackTrace.toString())
+          child: widget.entry.stackTrace.toString().trim().isNotEmpty
+              ? SelectableText(widget.entry.stackTrace.toString().trim())
               : null,
         ),
     ];
