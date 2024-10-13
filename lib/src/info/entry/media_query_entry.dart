@@ -39,6 +39,15 @@ class MediaQueryInfoEntry extends StatelessWidget {
         defaultValue: 1,
         tooltip: "The number of device pixels for each logical pixel.",
       ),
+      DebugProperty(
+        "Physical Size",
+        data.size * data.devicePixelRatio,
+        tooltip: "The size of the media in device pixels.",
+      ),
+      DebugEnumProperty(
+        "Orientation",
+        data.orientation,
+      ),
       DebugDoubleProperty(
         "Text Scale Factor",
         data.textScaler.scale(1),
@@ -102,6 +111,12 @@ class MediaQueryInfoEntry extends StatelessWidget {
         ifTrue: "Should use high contrast",
       ),
       DebugFlagProperty(
+        "On/Off switch labels",
+        value: data.onOffSwitchLabels,
+        ifTrue: "Should use on/off labels inside switches",
+        tooltip: "Whether the user requested on/off labels inside switches",
+      ),
+      DebugFlagProperty(
         "Disable Animations",
         value: data.disableAnimations,
         ifTrue: "Disable animations",
@@ -114,6 +129,25 @@ class MediaQueryInfoEntry extends StatelessWidget {
       DebugEnumProperty(
         "Navigation Mode",
         data.navigationMode,
+      ),
+      DebugBlock(
+        name: "Gesture Settings",
+        children: [
+          DebugDoubleProperty(
+            "Touch Slop",
+            data.gestureSettings.touchSlop,
+            ifNull: "unset",
+            tooltip:
+                "The number of logical pixels a pointer is allowed to drift before it is considered an intentional touch.",
+          ),
+          DebugDoubleProperty(
+            "Pan Slop",
+            data.gestureSettings.panSlop,
+            ifNull: "unset",
+            tooltip:
+                "The number of logical pixels a pointer is allowed to drift before it is considered an intentional pan.",
+          ),
+        ],
       ),
     ];
   }
