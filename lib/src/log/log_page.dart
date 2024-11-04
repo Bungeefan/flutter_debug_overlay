@@ -56,6 +56,11 @@ class _LogPageState extends State<LogPage>
     super.dispose();
   }
 
+  @override
+  void updateFilter() {
+    _updateBucket();
+  }
+
   void _updateBucket() {
     Iterable<LogEvent> stream = widget.bucket.entries;
     if (filterEnabled) {
@@ -97,48 +102,7 @@ class _LogPageState extends State<LogPage>
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
-          child: Row(
-            children: [
-              const Text(
-                "Logs",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: IconButton(
-                  splashRadius: 25,
-                  tooltip: "Toggle Filter",
-                  icon: Icon(
-                    filterEnabled
-                        ? Icons.filter_alt
-                        : Icons.filter_alt_outlined,
-                  ),
-                  onPressed: toggleFilter,
-                ),
-              ),
-              const Spacer(),
-              TextButton.icon(
-                onPressed: widget.bucket.entries.isNotEmpty
-                    ? () {
-                        currentEntry = null;
-                        widget.bucket.clear();
-                        _updateBucket();
-                      }
-                    : null,
-                style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
-                ),
-                icon: const Icon(Icons.delete_outlined),
-                label: const Text("Clear logs"),
-              ),
-            ],
-          ),
-        ),
+        _buildHeader(context),
         Expanded(
           child: SplitPage(
             mainBuilder: (context, split) => _buildMain(context, split, events),
@@ -152,11 +116,6 @@ class _LogPageState extends State<LogPage>
         ),
       ],
     );
-  }
-
-  @override
-  void updateFilter() {
-    _updateBucket();
   }
 
   void _openLogDetails(BuildContext context) {
@@ -185,37 +144,83 @@ class _LogPageState extends State<LogPage>
   Widget _buildMain(BuildContext context, bool split, Iterable<LogEvent> logs) {
     return Column(
       children: [
-        if (filterEnabled)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: SearchField(
-                    controller: searchController,
-                    onSearch: onSearch,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: LevelSelector(
-                    level: levelFilter,
-                    onLevelChanged: (level) {
-                      if (level != levelFilter) {
-                        levelFilter = level;
-                        updateFilter();
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
+        if (filterEnabled) _buildFilter(context),
         Expanded(
           child: _buildLogsList(split, logs),
         ),
       ],
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        children: [
+          const Text(
+            "Logs",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: IconButton(
+              splashRadius: 25,
+              tooltip: "Toggle Filter",
+              icon: Icon(
+                filterEnabled ? Icons.filter_alt : Icons.filter_alt_outlined,
+              ),
+              onPressed: toggleFilter,
+            ),
+          ),
+          const Spacer(),
+          TextButton.icon(
+            onPressed: widget.bucket.entries.isNotEmpty
+                ? () {
+                    currentEntry = null;
+                    widget.bucket.clear();
+                    _updateBucket();
+                  }
+                : null,
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            icon: const Icon(Icons.delete_outlined),
+            label: const Text("Clear logs"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilter(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: SearchField(
+              controller: searchController,
+              onSearch: onSearch,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: LevelSelector(
+              level: levelFilter,
+              onLevelChanged: (level) {
+                if (level != levelFilter) {
+                  levelFilter = level;
+                  updateFilter();
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 

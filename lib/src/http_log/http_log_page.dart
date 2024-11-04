@@ -102,49 +102,7 @@ class _HttpLogPageState extends State<HttpLogPage>
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                "Requests",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: IconButton(
-                  splashRadius: 25,
-                  tooltip: "Toggle Filter",
-                  icon: Icon(
-                    filterEnabled
-                        ? Icons.filter_alt
-                        : Icons.filter_alt_outlined,
-                  ),
-                  onPressed: toggleFilter,
-                ),
-              ),
-              const Spacer(),
-              TextButton.icon(
-                onPressed: widget.bucket.entries.isNotEmpty
-                    ? () {
-                        currentEntry = null;
-                        widget.bucket.clear();
-                        _updateBucket();
-                      }
-                    : null,
-                style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
-                ),
-                icon: const Icon(Icons.delete_outlined),
-                label: const Text("Clear requests"),
-              ),
-            ],
-          ),
-        ),
+        _buildHeader(context),
         Expanded(
           child: SplitPage(
             mainBuilder: (context, split) =>
@@ -182,32 +140,85 @@ class _HttpLogPageState extends State<HttpLogPage>
     }
   }
 
-  Widget _buildMain(BuildContext context, bool split,
-      Iterable<HttpInteraction> interactions) {
+  Widget _buildMain(
+    BuildContext context,
+    bool split,
+    Iterable<HttpInteraction> interactions,
+  ) {
     return Column(
       children: [
-        if (filterEnabled)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: SearchField(
-                    controller: searchController,
-                    onSearch: onSearch,
-                  ),
-                ),
-              ],
-            ),
-          ),
+        if (filterEnabled) _buildFilter(context),
         Expanded(
-          child: _buildLogsList(split, interactions),
+          child: _buildInteractionsList(split, interactions),
         ),
       ],
     );
   }
 
-  Widget _buildLogsList(bool split, Iterable<HttpInteraction> interactions) {
+  Widget _buildHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            "Requests",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: IconButton(
+              splashRadius: 25,
+              tooltip: "Toggle Filter",
+              icon: Icon(
+                filterEnabled ? Icons.filter_alt : Icons.filter_alt_outlined,
+              ),
+              onPressed: toggleFilter,
+            ),
+          ),
+          const Spacer(),
+          TextButton.icon(
+            onPressed: widget.bucket.entries.isNotEmpty
+                ? () {
+                    currentEntry = null;
+                    widget.bucket.clear();
+                    _updateBucket();
+                  }
+                : null,
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            icon: const Icon(Icons.delete_outlined),
+            label: const Text("Clear requests"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilter(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: SearchField(
+              controller: searchController,
+              onSearch: onSearch,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInteractionsList(
+    bool split,
+    Iterable<HttpInteraction> interactions,
+  ) {
     if (interactions.isEmpty) {
       return Center(
         child: Text(
