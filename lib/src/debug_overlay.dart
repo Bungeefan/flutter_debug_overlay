@@ -278,7 +278,7 @@ class DebugOverlayState extends State<DebugOverlay> {
                 ),
             scaffoldBackgroundColor: Theme.of(context)
                 .scaffoldBackgroundColor
-                .withOpacity(widget.opacity),
+                .withValues(alpha: widget.opacity),
           ),
           child: HeroControllerScope(
             controller: _heroController,
