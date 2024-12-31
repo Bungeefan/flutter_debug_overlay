@@ -186,6 +186,7 @@ class _LogPageState extends State<LogPage>
                 : null,
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.error,
+              iconColor: Theme.of(context).colorScheme.error,
             ),
             icon: const Icon(Icons.delete_outlined),
             label: const Text("Clear logs"),

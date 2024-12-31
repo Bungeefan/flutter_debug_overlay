@@ -190,6 +190,7 @@ class _HttpLogPageState extends State<HttpLogPage>
                 : null,
             style: TextButton.styleFrom(
               foregroundColor: Theme.of(context).colorScheme.error,
+              iconColor: Theme.of(context).colorScheme.error,
             ),
             icon: const Icon(Icons.delete_outlined),
             label: const Text("Clear requests"),
