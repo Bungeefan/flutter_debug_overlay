@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DebugPage extends StatelessWidget {
+class DebugPage extends StatefulWidget {
   final List<Widget> entries;
 
   const DebugPage({
@@ -9,8 +9,20 @@ class DebugPage extends StatelessWidget {
   });
 
   @override
+  State<DebugPage> createState() => _DebugPageState();
+}
+
+class _DebugPageState extends State<DebugPage>
+    with AutomaticKeepAliveClientMixin {
+  // Saves potential state in custom debug entries.
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
-    if (entries.isEmpty) {
+    super.build(context);
+
+    if (widget.entries.isEmpty) {
       return Center(
         child: Text(
           "No entries",
@@ -20,9 +32,8 @@ class DebugPage extends StatelessWidget {
     }
 
     return ListView.separated(
-      key: PageStorageKey(entries),
-      itemCount: entries.length,
-      itemBuilder: (context, index) => entries[index],
+      itemCount: widget.entries.length,
+      itemBuilder: (context, index) => widget.entries[index],
       separatorBuilder: (context, index) => const Divider(),
     );
   }
