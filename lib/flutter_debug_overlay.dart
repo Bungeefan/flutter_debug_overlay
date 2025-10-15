@@ -1,5 +1,5 @@
 /// Flutter Debug Overlay
-library flutter_debug_overlay;
+library;
 
 export 'src/action_value/action/debug_action.dart';
 export 'src/action_value/value/debug_value.dart';

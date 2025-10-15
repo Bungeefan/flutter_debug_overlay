@@ -59,7 +59,7 @@ abstract class Utils {
         mediaType?.subtype == "json";
   }
 
-  static encodingForCharset(MediaType? mediaType) {
+  static Encoding encodingForCharset(MediaType? mediaType) {
     return Encoding.getByName(mediaType?.parameters['charset']) ?? utf8;
   }
 }

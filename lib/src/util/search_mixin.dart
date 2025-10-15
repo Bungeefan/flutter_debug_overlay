@@ -13,7 +13,7 @@ mixin SearchCapability<T extends StatefulWidget>
     searchController = TextEditingController();
   }
 
-  void onSearch(text) {
+  void onSearch(String text) {
     String? oldFilter = searchFilter;
     searchFilter = text.toLowerCase();
     if (oldFilter != searchFilter) {
