@@ -1,3 +1,9 @@
+## 0.1.10
+
+* Increased version range for `package_info_plus` and `device_info_plus`.
+* Replaced `withOpacity` with `withValues`.
+* Added KeepAlive to Debug page.
+
 ## 0.1.9
 
 * Increased version range for `device_info_plus`.
