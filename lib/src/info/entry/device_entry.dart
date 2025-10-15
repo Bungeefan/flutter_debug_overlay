@@ -162,7 +162,6 @@ class DeviceInfoEntry extends StatelessWidget {
           DebugStringProperty("Bootloader", info.bootloader),
           DebugStringProperty("Hardware", info.hardware),
           DebugStringProperty("Hostname", info.host),
-          DebugStringProperty("Serial Number", info.serialNumber),
           DebugStringProperty("Changelist Number / Label", info.id),
         ],
         children: [
