@@ -4,10 +4,7 @@ import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 class ExampleDebug extends StatelessWidget {
   final void Function([ThemeMode? themeMode]) onThemeChange;
 
-  const ExampleDebug({
-    super.key,
-    required this.onThemeChange,
-  });
+  const ExampleDebug({super.key, required this.onThemeChange});
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 {
-    "name": "example",
-    "short_name": "example",
+    "name": "flutter_debug_overlay_example",
+    "short_name": "flutter_debug_overlay_example",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

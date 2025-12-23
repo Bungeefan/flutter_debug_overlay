@@ -23,40 +23,47 @@ void main() {
 
   // Uncaught Exceptions.
   PlatformDispatcher.instance.onError = (exception, stackTrace) {
-    MyApp.logBucket.add(LogEvent(
-      level: LogLevel.fatal,
-      message: "Unhandled Exception",
-      error: exception,
-      stackTrace: stackTrace,
-    ));
+    MyApp.logBucket.add(
+      LogEvent(
+        level: LogLevel.fatal,
+        message: "Unhandled Exception",
+        error: exception,
+        stackTrace: stackTrace,
+      ),
+    );
     return false;
   };
 
   // Rendering Exceptions.
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
-    MyApp.logBucket.add(LogEvent(
-      level: LogLevel.fatal,
-      message: details.exceptionAsString(),
-      error: (kDebugMode
-          ? details.toDiagnosticsNode().toStringDeep()
-          : details.exception.toString()),
-      stackTrace: details.stack,
-    ));
+    MyApp.logBucket.add(
+      LogEvent(
+        level: LogLevel.fatal,
+        message: details.exceptionAsString(),
+        error: (kDebugMode
+            ? details.toDiagnosticsNode().toStringDeep()
+            : details.exception.toString()),
+        stackTrace: details.stack,
+      ),
+    );
   };
 
   // Connects logger to the overlay.
   Logger.addOutputListener((event) {
-    LogLevel? level = LogLevel.values
-        .firstWhereOrNull((element) => element.name == event.origin.level.name);
+    LogLevel? level = LogLevel.values.firstWhereOrNull(
+      (element) => element.name == event.origin.level.name,
+    );
     if (level == null) return;
-    MyApp.logBucket.add(LogEvent(
-      level: level,
-      message: event.origin.message,
-      error: event.origin.error,
-      stackTrace: event.origin.stackTrace,
-      time: event.origin.time,
-    ));
+    MyApp.logBucket.add(
+      LogEvent(
+        level: level,
+        message: event.origin.message,
+        error: event.origin.error,
+        stackTrace: event.origin.stackTrace,
+        time: event.origin.time,
+      ),
+    );
   });
 
   runApp(const MyApp());
@@ -131,9 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Flutter Debug Demo"),
-      ),
+      appBar: AppBar(title: const Text("Flutter Debug Demo")),
       body: Center(
         child: SingleChildScrollView(
           child: Row(
@@ -158,17 +163,21 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const MySecondPage(),
-                            ));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const MySecondPage(),
+                              ),
+                            );
                           },
                           child: const Text("Route to second page"),
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const AnotherPage(),
-                            ));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const AnotherPage(),
+                              ),
+                            );
                           },
                           child: const Text("Route to another page"),
                         ),
@@ -210,8 +219,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                MyApp.logger
-                                    .w("Database didn't respond under 500ms");
+                                MyApp.logger.w(
+                                  "Database didn't respond under 500ms",
+                                );
                               },
                               child: const Text("Warn Log"),
                             ),
@@ -299,8 +309,10 @@ class _MyHomePageState extends State<MyHomePage> {
       // Log request
       httpClientAdapter.onRequest(request);
       var response = await request.close();
-      Object? responseBody =
-          await _parseHttpClientResponse(response, responseType);
+      Object? responseBody = await _parseHttpClientResponse(
+        response,
+        responseType,
+      );
       // Log response
       httpClientAdapter.onResponse(request, response, responseBody);
 
@@ -319,8 +331,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return client
         .post(baseUrl.replace(path: "204"), body: bigJson)
         .then((value) => log("Received \"http\" response: ${value.body}"))
-        .catchError((e, stack) =>
-            log("\"http\" request failed", error: e, stackTrace: stack));
+        .catchError(
+          (e, stack) =>
+              log("\"http\" request failed", error: e, stackTrace: stack),
+        );
   }
 
   /// Dio
@@ -347,16 +361,15 @@ class _MyHomePageState extends State<MyHomePage> {
 }"""),
           options: Options(
             contentType: "application/octet-stream",
-            extra: {
-              "Test extras": true,
-            },
+            extra: {"Test extras": true},
             validateStatus: (status) => true,
             responseType: responseType,
           ),
         )
         .then((value) => log("Received Dio response: $value"))
-        .catchError((e, stack) =>
-            log("Dio request failed", error: e, stackTrace: stack));
+        .catchError(
+          (e, stack) => log("Dio request failed", error: e, stackTrace: stack),
+        );
   }
 
   Future<Object?> _parseHttpClientResponse(
@@ -370,8 +383,9 @@ class _MyHomePageState extends State<MyHomePage> {
         responseBody = await response.transform(utf8.decoder).join();
         break;
       case ResponseType.bytes:
-        responseBody =
-            (await response.toList()).expand((element) => element).toList();
+        responseBody = (await response.toList())
+            .expand((element) => element)
+            .toList();
         break;
       case ResponseType.stream:
         responseBody = response;
@@ -397,9 +411,7 @@ class MySecondPage extends StatelessWidget {
       infoEntries: const [],
       child: Scaffold(
         appBar: AppBar(title: const Text("Second Page")),
-        body: const Center(
-          child: Text("Second Page"),
-        ),
+        body: const Center(child: Text("Second Page")),
       ),
     );
   }
@@ -424,41 +436,37 @@ class _AnotherPageState extends State<AnotherPage> {
     startTimer();
 
     // Simple value
-    DebugOverlay.maybeOf(context)?.addValue(DebugValue(
-      name: "Counter",
-      listenable: _counter,
-    ));
+    DebugOverlay.maybeOf(
+      context,
+    )?.addValue(DebugValue(name: "Counter", listenable: _counter));
 
     // Custom widget
-    DebugOverlay.maybeOf(context)?.addValue(DebugValue(
-      name: "Custom Counter",
-      listenable: _counter,
-      builder: (context, value, child) {
-        return Icon(
-          value % 2 == 0
-              ? Icons.markunread_mailbox
-              : Icons.markunread_mailbox_outlined,
-        );
-      },
-    ));
+    DebugOverlay.maybeOf(context)?.addValue(
+      DebugValue(
+        name: "Custom Counter",
+        listenable: _counter,
+        builder: (context, value, child) {
+          return Icon(
+            value % 2 == 0
+                ? Icons.markunread_mailbox
+                : Icons.markunread_mailbox_outlined,
+          );
+        },
+      ),
+    );
 
-    DebugOverlay.maybeOf(context)?.addAction(DebugAction(
-      name: "Start Counter",
-      onAction: startTimer,
-    ));
-    DebugOverlay.maybeOf(context)?.addAction(DebugAction(
-      name: "Stop Counter",
-      onAction: stopTimer,
-    ));
+    DebugOverlay.maybeOf(
+      context,
+    )?.addAction(DebugAction(name: "Start Counter", onAction: startTimer));
+    DebugOverlay.maybeOf(
+      context,
+    )?.addAction(DebugAction(name: "Stop Counter", onAction: stopTimer));
   }
 
   void startTimer() {
-    timer = Timer.periodic(
-      const Duration(milliseconds: 500),
-      (timer) {
-        _counter.value++;
-      },
-    );
+    timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      _counter.value++;
+    });
   }
 
   void stopTimer() {
