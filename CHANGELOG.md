@@ -1,3 +1,8 @@
+## 0.1.11
+
+* Increased version range for `package_info_plus`, `device_info_plus` and `flutter_json`. Thanks to
+  @hakonber ([#10](https://github.com/Bungeefan/flutter_debug_overlay/pull/10)).
+
 ## 0.1.10
 
 * Increased version range for `package_info_plus` and `device_info_plus`.
