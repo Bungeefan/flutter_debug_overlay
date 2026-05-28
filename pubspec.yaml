@@ -18,12 +18,12 @@ dependencies:
     sdk: flutter
 
   collection: ^1.17.0
-  package_info_plus: '>=4.0.2 <10.0.0'
-  device_info_plus: '>=8.0.0 <13.0.0'
+  package_info_plus: '>=4.0.2 <11.0.0'
+  device_info_plus: '>=8.0.0 <14.0.0'
   split_view: ^3.2.1
 
   multi_long_press_gesture_recognizer: ^0.0.1
-  flutter_json: ^0.0.1
+  flutter_json: '>=0.0.1 <0.2.0'
 
   # Used to provide interceptors and adapters
   http: ^1.0.0
