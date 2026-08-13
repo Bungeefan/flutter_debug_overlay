@@ -43,7 +43,7 @@ class DebugInfoEntry extends StatelessWidget {
           }
 
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator.adaptive());
           }
 
           if (snapshot.data!.isNotEmpty) {
