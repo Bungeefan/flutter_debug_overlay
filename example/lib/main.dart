@@ -5,10 +5,10 @@ import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart' hide LogEvent;
+import 'package:material_ui/material_ui.dart';
 import 'package:universal_io/io.dart';
 
 import 'example_data.dart';

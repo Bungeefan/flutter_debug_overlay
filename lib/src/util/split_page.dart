@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:split_view/split_view.dart';
 
 class SplitPage extends StatefulWidget {

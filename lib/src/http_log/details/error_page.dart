@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_json/flutter_json.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../util/expandable_card.dart';
 import '../http_interaction.dart';

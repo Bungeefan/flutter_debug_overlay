@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_debug_overlay/flutter_debug_overlay.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ExampleDebug extends StatelessWidget {
   final void Function([ThemeMode? themeMode]) onThemeChange;
