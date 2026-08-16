@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:http_parser/http_parser.dart';
 
 import '../../../flutter_debug_overlay.dart';
-import '../../util/utils.dart';
 
 /// An "dart:io" [HttpClient] adapter that logs requests to a [HttpBucket].
 ///
@@ -59,17 +58,30 @@ class HttpClientLogAdapter {
     httpBucket.addError(request.hashCode, err);
   }
 
+  Map<String, List<String>> extractHeaders(HttpHeaders httpHeaders) {
+    final Map<String, List<String>> headers = {};
+    httpHeaders.forEach((name, values) {
+      headers[name] = values;
+    });
+    return headers;
+  }
+
+  Object? decodeBody(Map<String, List<String>> headers, Object? body) {
+    MediaType? mediaType = DebugOverlay.httpHandler.extractMediaType(headers);
+    return body is List<int> &&
+            DebugOverlay.httpHandler.isMediaTypeText(mediaType)
+        ? DebugOverlay.httpHandler.encodingForCharset(mediaType).decode(body)
+        : body;
+  }
+
   HttpRequest convertRequest(
     HttpClientRequest request, [
     Object? body,
   ]) {
-    var headers = _extractHeaders(request.headers);
-    MediaType? mediaType = Utils.extractMediaType(headers);
+    var headers = extractHeaders(request.headers);
     return HttpRequest(
       headers: headers,
-      body: body is List<int> && Utils.isMediaTypeText(mediaType)
-          ? Utils.encodingForCharset(mediaType).decode(body)
-          : body,
+      body: decodeBody(headers, body),
       time: DateTime.now(),
       additionalData: {
         "contentLength": request.contentLength,
@@ -91,15 +103,12 @@ class HttpClientLogAdapter {
     HttpClientResponse response, [
     Object? body,
   ]) {
-    var headers = _extractHeaders(response.headers);
-    MediaType? mediaType = Utils.extractMediaType(headers);
+    var headers = extractHeaders(response.headers);
     return HttpResponse(
       headers: headers,
       statusCode: response.statusCode,
       statusMessage: response.reasonPhrase,
-      body: body is List<int> && Utils.isMediaTypeText(mediaType)
-          ? Utils.encodingForCharset(mediaType).decode(body)
-          : body,
+      body: decodeBody(headers, body),
       time: DateTime.now(),
       additionalData: {
         "contentLength": response.contentLength,
@@ -117,13 +126,5 @@ class HttpClientLogAdapter {
       stackTrace: stack,
       time: DateTime.now(),
     );
-  }
-
-  static Map<String, List<String>> _extractHeaders(HttpHeaders httpHeaders) {
-    final Map<String, List<String>> headers = {};
-    httpHeaders.forEach((name, values) {
-      headers[name] = values;
-    });
-    return headers;
   }
 }

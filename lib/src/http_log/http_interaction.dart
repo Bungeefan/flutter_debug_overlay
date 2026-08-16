@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../util/utils.dart';
+import '../debug_overlay.dart';
 
 class HttpInteraction {
   int id;
@@ -78,7 +78,7 @@ class HttpRequest {
     Object? body,
     this.time,
     this.additionalData,
-  }) : body = Utils.tryParseJson(body);
+  }) : body = DebugOverlay.httpHandler.tryParseBody(body);
 
   HttpRequest.fromJson(Map<String, dynamic> json)
       : this(
@@ -129,7 +129,7 @@ class HttpResponse {
     Object? body,
     this.time,
     this.additionalData,
-  }) : body = Utils.tryParseJson(body);
+  }) : body = DebugOverlay.httpHandler.tryParseBody(body);
 
   HttpResponse.fromJson(Map<String, dynamic> json)
       : this(

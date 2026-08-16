@@ -5,7 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../util/expandable_card.dart';
 import '../http_interaction.dart';
-import '../item/body_item.dart';
+import '../item/data_item.dart';
 
 class ErrorPage extends StatefulWidget {
   final List<Widget> children;
@@ -79,11 +79,11 @@ class ErrorPageState extends State<ErrorPage>
           case 0:
             if (widget.httpInteraction.error != null) {
               if (isEncodable) {
-                return BodyItem(
+                return DataItem(
                   title: const Text("Error"),
                   controller: _bodyController,
                   initialExpandDepth: 4,
-                  body: widget.httpInteraction.error?.error,
+                  data: widget.httpInteraction.error?.error,
                   hiddenKeys: widget.hiddenFields,
                 );
               } else {
@@ -112,11 +112,11 @@ class ErrorPageState extends State<ErrorPage>
                   : null,
             );
           case 2:
-            return BodyItem(
+            return DataItem(
               title: const Text("Additional Data"),
               expanded: false,
               controller: _dataController,
-              body: widget.httpInteraction.error?.additionalData,
+              data: widget.httpInteraction.error?.additionalData,
               hiddenKeys: widget.hiddenFields,
             );
           default:

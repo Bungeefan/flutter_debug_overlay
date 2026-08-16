@@ -18,5 +18,6 @@ export 'src/info/entry/platform_entry.dart';
 export 'src/info/properties.dart';
 export 'src/log/log_event.dart';
 export 'src/util/bucket.dart';
+export 'src/util/debug_http_handler.dart';
 export 'src/util/http_bucket.dart';
 export 'src/util/log_bucket.dart';

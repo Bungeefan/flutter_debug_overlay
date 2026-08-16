@@ -16,6 +16,8 @@ from anywhere in your app.
 * **Custom widgets**: Supports custom widgets to enable global actions from everywhere in your app.
 * **Log viewer**: Displays your logs in a nice and sorted view.
 * **HTTP request inspector**: Allows you to inspect logged HTTP requests including a JSON viewer.
+  * Supports implementing custom request/response body widgets using
+    [`DebugHttpHandler`](#example-custom-body-widgets).
 * **Provided HTTP middlewares**: The debug overlay provides several middleware options for logging
   HTTP
   requests, including the `DioLogInterceptor` for the
@@ -189,6 +191,33 @@ debug overlay.
     ```dart
     client = HttpLogClient(MyApp.httpBucket, http.Client());
     ```
+
+#### Example custom body widgets
+
+```dart
+DebugOverlay.httpHandler = CustomHttpHandler();
+```
+
+```dart
+class CustomHttpHandler extends DebugHttpHandler {
+  @override
+  BodyType determineBodyType(headers, body) {
+    var mediaType = headers != null ? extractMediaType(headers) : null;
+    if (mediaType?.type == "image") {
+      return BodyType.custom;
+    }
+    return super.determineBodyType(headers, body);
+  }
+
+  @override
+  Widget buildCustomBody(context, headers, body, hiddenKeys) {
+    if (body is List<int>) {
+      return Image.memory(Uint8List.fromList(body));
+    }
+    return Text(body.toString());
+  }
+}
+```
 
 ## Additional information
 

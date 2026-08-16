@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../http_interaction.dart';
 import '../item/body_item.dart';
+import '../item/data_item.dart';
 import '../item/header_item.dart';
 import '../item/parameter_item.dart';
 
@@ -68,15 +69,16 @@ class RequestPageState extends State<RequestPage>
           case 2:
             return BodyItem(
               controller: _bodyController,
+              headers: widget.httpInteraction.request?.headers,
               body: widget.httpInteraction.request?.body,
               hiddenKeys: widget.hiddenFields,
             );
           case 3:
-            return BodyItem(
+            return DataItem(
               title: const Text("Additional Data"),
               expanded: false,
               controller: _dataController,
-              body: widget.httpInteraction.request?.additionalData,
+              data: widget.httpInteraction.request?.additionalData,
               hiddenKeys: widget.hiddenFields,
             );
           default:

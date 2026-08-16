@@ -14,6 +14,7 @@ import 'info/entry/package_entry.dart';
 import 'info/entry/platform_entry.dart';
 import 'info/info_page.dart';
 import 'log/log_page.dart';
+import 'util/debug_http_handler.dart';
 import 'util/http_bucket.dart';
 import 'util/log_bucket.dart';
 import 'util/page_tab_switcher.dart';
@@ -34,6 +35,8 @@ class DebugOverlay extends StatefulWidget {
   ///
   /// Defaults to the value of [kDebugMode].
   static bool enabled = kDebugMode;
+
+  static DebugHttpHandler httpHandler = DebugHttpHandler();
 
   /// Whether the overlay is initially visible.
   final bool visible;

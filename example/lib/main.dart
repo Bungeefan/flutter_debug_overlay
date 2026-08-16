@@ -13,6 +13,7 @@ import 'package:universal_io/io.dart';
 
 import 'example_data.dart';
 import 'example_debug_entry.dart';
+import 'http_handler.dart';
 import 'logging/log_adapter.dart';
 import 'logging/log_client.dart';
 import 'logging/log_interceptor.dart';
@@ -20,6 +21,8 @@ import 'logging/log_interceptor.dart';
 void main() {
   // Enables the debug overlay even in release mode.
   DebugOverlay.enabled = true;
+
+  DebugOverlay.httpHandler = CustomHttpHandler();
 
   // Uncaught Exceptions.
   PlatformDispatcher.instance.onError = (exception, stackTrace) {
@@ -115,7 +118,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static Uri baseUrl = Uri.parse("https://httpstat.us/");
+  static Uri baseUrl = Uri.parse("https://http-stat.us/");
+  static Uri catUrl = Uri.parse("https://http.cat/");
 
   late final HttpClient httpClient;
   late final HttpClientLogAdapter httpClientAdapter;
@@ -260,9 +264,26 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                _sendHttpClientRequest();
+                                _sendHttpClientRequest(
+                                  baseUrl.replace(path: "418"),
+                                );
                               },
                               child: const Text("Dart HTTP Request"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                _sendHttpClientRequest(
+                                  catUrl.replace(path: "418"),
+                                  ResponseType.bytes,
+                                );
+                              },
+                              child: const Text("Dart HTTP Request (Image)"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                _sendHttpClientRequest(baseUrl);
+                              },
+                              child: const Text("Dart HTTP Request (HTML)"),
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -300,12 +321,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   /// Dart HttpClient
-  Future<void> _sendHttpClientRequest([
+  Future<void> _sendHttpClientRequest(
+    Uri uri, [
     ResponseType responseType = ResponseType.plain,
   ]) async {
     HttpClientRequest? request;
     try {
-      request = await httpClient.getUrl(baseUrl.replace(path: "418"));
+      request = await httpClient.getUrl(uri);
       // Log request
       httpClientAdapter.onRequest(request);
       var response = await request.close();

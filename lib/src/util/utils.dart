@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:material_ui/material_ui.dart';
 
 abstract class Utils {
@@ -29,37 +28,6 @@ abstract class Utils {
   static String encodePrettyJson(Object? data) {
     const je = JsonEncoder.withIndent("  ");
     return je.convert(data);
-  }
-
-  static Object? tryParseJson(Object? data) {
-    if (data is String) {
-      try {
-        return json.decode(data);
-      } on FormatException catch (_) {}
-    }
-    return data;
-  }
-
-  static MediaType? extractMediaType(Map<String, dynamic> headers) {
-    dynamic contentType = headers["content-type"];
-    if (contentType is List) {
-      contentType = contentType.firstOrNull;
-    }
-    MediaType? mediaType =
-        contentType != null ? MediaType.parse(contentType) : null;
-    return mediaType;
-  }
-
-  static bool isMediaTypeText(MediaType? mediaType) {
-    return mediaType?.type == "text" ||
-        mediaType?.subtype == "x-www-form-urlencoded" ||
-        mediaType?.subtype == "form-data" ||
-        mediaType?.subtype == "xml" ||
-        mediaType?.subtype == "json";
-  }
-
-  static Encoding encodingForCharset(MediaType? mediaType) {
-    return Encoding.getByName(mediaType?.parameters['charset']) ?? utf8;
   }
 }
 

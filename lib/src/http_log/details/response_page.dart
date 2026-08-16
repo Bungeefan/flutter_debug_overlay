@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../http_interaction.dart';
 import '../item/body_item.dart';
+import '../item/data_item.dart';
 import '../item/header_item.dart';
 
 class ResponsePage extends StatefulWidget {
@@ -62,15 +63,16 @@ class ResponsePageState extends State<ResponsePage>
           case 1:
             return BodyItem(
               controller: _bodyController,
+              headers: widget.httpInteraction.response?.headers,
               body: widget.httpInteraction.response?.body,
               hiddenKeys: widget.hiddenFields,
             );
           case 2:
-            return BodyItem(
+            return DataItem(
               title: const Text("Additional Data"),
               expanded: false,
               controller: _dataController,
-              body: widget.httpInteraction.response?.additionalData,
+              data: widget.httpInteraction.response?.additionalData,
               hiddenKeys: widget.hiddenFields,
             );
           default:

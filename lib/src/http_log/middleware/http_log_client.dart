@@ -5,7 +5,6 @@ import 'package:http/retry.dart';
 import 'package:http_parser/http_parser.dart';
 
 import '../../../flutter_debug_overlay.dart';
-import '../../util/utils.dart';
 
 /// An [http.Client] wrapper that logs requests to a [HttpBucket].
 ///
@@ -102,13 +101,17 @@ class HttpLogClient extends http.BaseClient {
     return response;
   }
 
+  Object? decodeBody(Map<String, String> headers, Uint8List body) {
+    MediaType? mediaType = DebugOverlay.httpHandler.extractMediaType(headers);
+    return DebugOverlay.httpHandler.isMediaTypeText(mediaType)
+        ? http.Response.bytes(body, 200).body
+        : body;
+  }
+
   HttpRequest convertRequest(http.BaseRequest request, Uint8List body) {
-    MediaType? mediaType = Utils.extractMediaType(request.headers);
     return HttpRequest(
       headers: request.headers,
-      body: Utils.isMediaTypeText(mediaType)
-          ? http.Response.bytes(body, 200).body
-          : body,
+      body: decodeBody(request.headers, body),
       time: DateTime.now(),
       additionalData: {
         "contentLength": request.contentLength ?? body.lengthInBytes,
@@ -118,14 +121,11 @@ class HttpLogClient extends http.BaseClient {
   }
 
   HttpResponse convertResponse(http.StreamedResponse response, Uint8List body) {
-    MediaType? mediaType = Utils.extractMediaType(response.headers);
     return HttpResponse(
       headers: response.headers,
       statusCode: response.statusCode,
       statusMessage: response.reasonPhrase,
-      body: Utils.isMediaTypeText(mediaType)
-          ? http.Response.bytes(body, 200).body
-          : body,
+      body: decodeBody(response.headers, body),
       time: DateTime.now(),
       additionalData: {
         "contentLength": response.contentLength ?? body.lengthInBytes,
