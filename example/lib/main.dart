@@ -458,9 +458,8 @@ class _AnotherPageState extends State<AnotherPage> {
     startTimer();
 
     // Simple value
-    DebugOverlay.maybeOf(
-      context,
-    )?.addValue(DebugValue(name: "Counter", listenable: _counter));
+    DebugOverlay.maybeOf(context)
+        ?.addValue(DebugValue(name: "Counter", listenable: _counter));
 
     // Custom widget
     DebugOverlay.maybeOf(context)?.addValue(
@@ -477,12 +476,10 @@ class _AnotherPageState extends State<AnotherPage> {
       ),
     );
 
-    DebugOverlay.maybeOf(
-      context,
-    )?.addAction(DebugAction(name: "Start Counter", onAction: startTimer));
-    DebugOverlay.maybeOf(
-      context,
-    )?.addAction(DebugAction(name: "Stop Counter", onAction: stopTimer));
+    DebugOverlay.maybeOf(context)
+        ?.addAction(DebugAction(name: "Start Counter", onAction: startTimer));
+    DebugOverlay.maybeOf(context)
+        ?.addAction(DebugAction(name: "Stop Counter", onAction: stopTimer));
   }
 
   void startTimer() {
